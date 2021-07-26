@@ -12,20 +12,20 @@ export default function LandingPage(props){
             <React.Fragment>
                 {user.role === "Teacher" ?
                     <React.Fragment>
-                    <div>
+                    <div className='text-center'>
                         <p>Teacher logged in</p>
                     </div>
                     </React.Fragment>
                 :
                     <React.Fragment>
-                    <div>
+                    <div className='text-center'>
                         <p>Student logged in</p>
                     </div>
                     </React.Fragment>
                 } 
             </React.Fragment>
             :
-            <div>
+            <div className='text-center'>
                 <p>Logged out</p>
             </div>
             }

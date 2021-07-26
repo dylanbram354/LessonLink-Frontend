@@ -5,6 +5,7 @@ import useCal from './hooks/useCal';
 import LandingPage from './components/landingPage';
 import Register from './components/register';
 import Login from './components/login';
+import NavBar from './components/navBar';
 
 function App() {
 
@@ -36,7 +37,7 @@ function App() {
 
   return (
     <React.Fragment>
-      {/* <NavBar user={user} logout={logout}/> */}
+      <NavBar user={user} logout={logout}/>
       <Switch>
         <Route path="/" exact render={(props) => (<LandingPage {...props} user={user} token={token}/>)} />
         <Route path="/register" component={Register} />
