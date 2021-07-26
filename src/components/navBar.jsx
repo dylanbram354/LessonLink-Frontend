@@ -22,26 +22,29 @@ export default function NavBar(props){
                         <Navbar variant="light">
                             <Container>
                                 <Navbar.Brand>LessonLink</Navbar.Brand>
-                                <Navbar.Brand>{user.role} - {user.username}</Navbar.Brand>
                                 <Nav>
-                                    <Nav.Item>Teacher links</Nav.Item>
+                                    <Nav.Item className="text-lg"> 
+                                        <Nav.Link as={Link} to="/"><h5>Home</h5></Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link as={Link} to="createLesson"><h5>Schedule Lesson</h5></Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
+                                    </Nav.Item>
                                 </Nav>
-                                <Nav.Item>
-                                    {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
-                                </Nav.Item>
                             </Container>
                         </Navbar>
                     :
                     <Navbar variant="light">
                         <Container>
                             <Navbar.Brand>LessonLink</Navbar.Brand>
-                            <Navbar.Brand>{user.role} - {user.username}</Navbar.Brand>
                             <Nav>
                                 <Nav.Item>student links</Nav.Item>
-                            </Nav>
-                            <Nav.Item>
-                                {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
-                            </Nav.Item>                            
+                                <Nav.Item>
+                                    {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
+                                </Nav.Item>  
+                            </Nav>                          
                         </Container>
                     </Navbar>
                     }

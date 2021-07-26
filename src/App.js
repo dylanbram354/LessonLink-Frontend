@@ -6,6 +6,8 @@ import LandingPage from './components/landingPage';
 import Register from './components/register';
 import Login from './components/login';
 import NavBar from './components/navBar';
+import EditLessonForm from './components/editLessonForm';
+import CreateLessonForm from './components/createLessonForm';
 
 function App() {
 
@@ -19,7 +21,7 @@ function App() {
     if(jwt !== null){
       try{
         let user = jwtDecode(jwt);
-        user = {...user, role: user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]};
+        user = {...user, role: user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], token: jwt};
         setToken(jwt);
         setUser(user);
       }
@@ -49,6 +51,32 @@ function App() {
               }
               else{
                   return <Login {...props} getToken={getToken}/>
+              }
+          }} />
+          <Route 
+          path='/editLesson' 
+          render={props => {
+              if (!user){
+                return <Redirect to="/" />;
+              }
+              else if (user.role != "Teacher"){
+                return <Redirect to="/" />;
+              }
+              else{
+                return <EditLessonForm {...props} user={user}/>
+              }
+          }} />
+          <Route 
+          path='/createLesson' 
+          render={props => {
+              if (!user){
+                return <Redirect to="/" />;
+              }
+              else if (user.role != "Teacher"){
+                return <Redirect to="/" />;
+              }
+              else{
+                return <CreateLessonForm {...props} user={user}/>
               }
           }} />
       </Switch>
