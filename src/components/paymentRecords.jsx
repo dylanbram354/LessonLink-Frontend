@@ -78,7 +78,7 @@ export default function PaymentRecords(props){
     }
 
     async function deletePayment(payment){
-        let confirm = window.confirm("Are you sure? This will not affect the student's current balance.");
+        let confirm = window.confirm("Are you sure? This will only remove your record of this payment. It will not affect the student's current balance.");
         if (confirm){
             await deleteRecord(payment);
             getPayments();
@@ -86,7 +86,7 @@ export default function PaymentRecords(props){
     }
 
     async function deleteAndCharge(payment){
-        let confirm = window.confirm("Are you sure? This will remove the record of this payment and add the payment amount back to the student's outstanding balance.");
+        let confirm = window.confirm("Are you sure? This will remove the record of this payment AND add the payment amount back to the student's outstanding balance!");
         if (confirm){
             await chargeStudent(payment);
             await deleteRecord(payment);
@@ -107,7 +107,7 @@ export default function PaymentRecords(props){
                     <Button variant='warning' onClick={() => deletePayment(payment)}>Remove Record</Button>
                 </td>
                 <td>
-                    <Button variant='danger' onClick={() => deleteAndCharge(payment)}>DELETE</Button>
+                    <Button variant='danger' onClick={() => deleteAndCharge(payment)}>DELETE AND RE-CHARGE</Button>
                 </td>
             </tr>
             )
@@ -115,7 +115,6 @@ export default function PaymentRecords(props){
 
         return(
             <div>
-                <p>"Remove Record" will only remove the record of the selected payment. "DELETE" will delete the payment record AND add the payment amount back to the student's balance.</p>
                 <Table>
                     <thead>
                         <tr>
@@ -139,7 +138,7 @@ export default function PaymentRecords(props){
     return(
         <React.Fragment>
             <div className='text-center row'>
-                <div className='col' />
+                {/* <div className='col' /> */}
                 <div className='col'>
                     <h1>Payment records - {user.username}</h1>
                     {payments ? 
@@ -156,7 +155,7 @@ export default function PaymentRecords(props){
                     </React.Fragment>
                     }
                 </div>
-                <div className='col' />
+                {/* <div className='col' /> */}
             </div>
         </React.Fragment>
     )

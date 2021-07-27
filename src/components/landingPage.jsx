@@ -33,7 +33,7 @@ export default function LandingPage(props){
 
 
     async function cancelLesson(lesson){
-        if (window.confirm("Are you sure? This will also delete any associated Google Calendar events.")){
+        if (window.confirm("Are you sure? This will delete your record of this lesson along with any associated Google Calendar events.")){
             try{
                 if(lesson.googleEventId != null){
                     await deleteEvent(lesson.googleEventId);
@@ -181,7 +181,6 @@ export default function LandingPage(props){
                 {user.role === "Teacher" ?
                     <React.Fragment>
                     <div className='text-center'>
-                        <h1>Hello teacher {user.username}!</h1>
                         {myLessons ? 
                             <React.Fragment>
                             {myLessons.length > 0 ?

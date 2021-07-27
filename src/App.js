@@ -10,6 +10,8 @@ import EditLessonForm from './components/editLessonForm';
 import CreateLessonForm from './components/createLessonForm';
 import LogPaymentForm from './components/logPaymentForm';
 import PaymentRecords from './components/paymentRecords';
+import LessonRecord from './components/lessonRecord';
+import MyStudents from './components/myStudents';
 
 function App() {
 
@@ -53,6 +55,29 @@ function App() {
               }
               else{
                   return <Login {...props} getToken={getToken}/>
+              }
+          }} />
+          <Route 
+          path='/myStudents' 
+          render={props => {
+              if (!user){
+                return <Redirect to="/" />;
+              }
+              else if (user.role != "Teacher"){
+                return <Redirect to="/" />;
+              }
+              else{
+                return <MyStudents {...props} user={user}/>
+              }
+          }} />
+          <Route 
+          path='/lessonRecord' 
+          render={props => {
+              if (!user){
+                  return <Redirect to="/" />;
+              }
+              else{
+                  return <LessonRecord {...props} user={user}/>
               }
           }} />
           <Route 
