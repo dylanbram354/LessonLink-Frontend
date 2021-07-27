@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Table } from 'react-bootstrap';
 import EditLessonForm from './editLessonForm';
+import useCal from '../hooks/useCal';
 
 export default function LandingPage(props){
 
     const [user, setUser] = useState(null);
     const [myLessons, setMyLessons] = useState(null);
+    const {addEvent, deleteEvent} = useCal();
 
     useEffect(() => {
         setUser(props.user);
@@ -29,12 +31,15 @@ export default function LandingPage(props){
         }
     }
 
+
     async function cancelLesson(lesson){
         if (window.confirm("Are you sure? This will also delete any associated Google Calendar events.")){
             try{
-                let response = axios.delete(`https://localhost:44394/api/lessons/delete/${lesson.lessonId}`, { headers: {Authorization: "Bearer " + props.user.token}});
+                if(lesson.googleEventId != null){
+                    await deleteEvent(lesson.googleEventId);
+                }
+                let response = await axios.delete(`https://localhost:44394/api/lessons/delete/${lesson.lessonId}`, { headers: {Authorization: "Bearer " + props.user.token}});
                 console.log(response.data);
-                alert("Lesson deleted - DON'T FORGET TO DELETE GOOGLE CALENDAR EVENT");
                 getMyLessons();
             }
             catch(err){
@@ -72,7 +77,7 @@ export default function LandingPage(props){
         if (m == 0){
             m ='00'
         }
-        if (m < 10){
+        else if (0 < m && m < 10){
             m = '0'+`${m}`;
         }
         let amPm = 'AM';
@@ -86,19 +91,19 @@ export default function LandingPage(props){
     function getDateFromDateObject(d){
         let day = d.getDate();
         let year = d.getFullYear();
-        let month = d.getMonth();
+        let month = d.getMonth()+1;
         return (`${month}/${day}/${year}`)
     }
 
     function generateTeacherLessonTable(){
         let sortedLessons = sortLessonsByDate(myLessons);
-        console.log(sortedLessons);
         let todayData = sortedLessons.today.map(lesson => {
             return(
                 <tr>
                     <td>{lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</td>
                     <td>{getTimeFromDateObject(new Date(lesson.startTime))}</td>
                     <td>{getTimeFromDateObject(new Date(lesson.endTime))}</td>
+                    <td>{lesson.googleEventId ? 'Yes' : 'No' }</td>
                     <td>${lesson.feeAmount}</td>
                     <td>
                         <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Log Lesson</Button>
@@ -116,6 +121,7 @@ export default function LandingPage(props){
                     <td>{getDateFromDateObject(new Date(lesson.startTime))}</td>
                     <td>{getTimeFromDateObject(new Date(lesson.startTime))}</td>
                     <td>{getTimeFromDateObject(new Date(lesson.endTime))}</td>
+                    <td>{lesson.googleEventId ? 'Yes' : 'No' }</td>
                     <td>${lesson.feeAmount}</td>
                     <td>
                         <Button variant='warning' onClick={() => cancelLesson(lesson)}>Cancel Lesson</Button>
@@ -134,6 +140,7 @@ export default function LandingPage(props){
                                 <th>Student</th>
                                 <th>Start time</th>
                                 <th>End time</th>
+                                <th>Google Event</th>
                                 <th>Fee amount</th>
                                 <th></th>
                                 <th></th>
@@ -153,6 +160,7 @@ export default function LandingPage(props){
                                 <th>Date</th>
                                 <th>Start time</th>
                                 <th>End time</th>
+                                <th>Google Event</th>
                                 <th>Fee amount</th>
                                 <th></th>
                             </tr>

@@ -44,11 +44,37 @@ const useCal = (props) => {
         })
     }
 
+    const deleteEvent = async (eventId) => {
+        await gapi.load('client:auth2', async () => {
+            console.log('loaded client');
+
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: DISCOVERY_DOCS,
+                scope: SCOPES
+            });
+
+
+            gapi.client.load('calendar', 'v3', () => {console.log('calendar loaded')});
+
+            await gapi.auth2.getAuthInstance().signIn();
+                    
+            var request = gapi.client.calendar.events.delete({
+                'calendarId': 'primary',
+                'eventId': eventId,
+            }, function(err){if(err){console.log(err);}})
+
+            request.execute(() => alert('Google event removed.'))
+        })
+
+    }
+
     const logoutGoogle = () =>{
         gapi.auth2.getAuthInstance().signOut();
     }
 
-    return { addEvent, logoutGoogle }
+    return { addEvent, deleteEvent, logoutGoogle }
 }
 
 export default useCal

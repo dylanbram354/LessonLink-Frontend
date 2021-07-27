@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Form, Button, Card, Container, InputGroup } from 'react-bootstrap';
 import moment from 'moment';
 import useCal from '../hooks/useCal';
+import { Redirect } from 'react-router';
 
 export default function CreateLessonForm(props){
 
@@ -12,6 +13,7 @@ export default function CreateLessonForm(props){
     const [user, setUser] = useState(props.user);
     const [myStudents, setMyStudents] = useState(null);
     const [today, setToday] = useState(() => { let date = moment().format(); return date.substring(0, date.length-9) + ':00.00'});
+    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         setValues({...values, addToGoogle: false});
@@ -83,8 +85,12 @@ export default function CreateLessonForm(props){
     async function submitForm(){ 
         if (values.addToGoogle == true){
             await createGoogleEvent();
+            setRedirect(true);
         }
-        return
+        else{
+            await addLesson();
+            setRedirect(true);
+        }
     }
 
     function handleToggle(){
@@ -93,6 +99,7 @@ export default function CreateLessonForm(props){
 
     return(
         <React.Fragment>
+            {!redirect ? 
             <div className='text-center row'>
                 <div className='col' />
                 <div className='col'>
@@ -136,6 +143,10 @@ export default function CreateLessonForm(props){
                 </div>
                 <div className='col' />
             </div>
+            :
+            <Redirect to='/' />
+            }
+            
         </React.Fragment>
     )
 }
