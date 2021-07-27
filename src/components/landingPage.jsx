@@ -72,6 +72,9 @@ export default function LandingPage(props){
         if (m == 0){
             m ='00'
         }
+        if (m < 10){
+            m = '0'+`${m}`;
+        }
         let amPm = 'AM';
         if (h > 12){
             h = h - 12;

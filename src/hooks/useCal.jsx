@@ -9,8 +9,9 @@ const useCal = (props) => {
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     var SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
-    const addEvent = ( startObject, endObject, summaryString = 'Lesson', attendeesArrayObjects = []) => { 
-        gapi.load('client:auth2', () => {
+    const addEvent = async ( startObject, endObject, summaryString = 'Lesson', callback) => {
+        
+        await gapi.load('client:auth2', async () => {
             console.log('loaded client');
 
             gapi.client.init({
@@ -18,62 +19,36 @@ const useCal = (props) => {
                 clientId: CLIENT_ID,
                 discoveryDocs: DISCOVERY_DOCS,
                 scope: SCOPES
-            })
+            });
 
 
             gapi.client.load('calendar', 'v3', () => {console.log('calendar loaded')});
 
-            gapi.auth2.getAuthInstance().signIn()
-            .then(
-                () => {
-                    var event = {
+            await gapi.auth2.getAuthInstance().signIn();
+            var event = {
                         'summary': summaryString,
-                        'start': startObject
-                        // {
-                        //   'dateTime': '2015-05-28T09:00:00-07:00',
-                        //   'timeZone': 'America/Los_Angeles'
-                        // }
-                        ,
+                        'start': startObject,
                         'end': endObject
-                        // {
-                        //   'dateTime': '2015-05-28T17:00:00-07:00',
-                        //   'timeZone': 'America/Los_Angeles'
-                        // }
-                        ,
-                        // 'recurrence': [
-                        //   'RRULE:FREQ=DAILY;COUNT=1'
-                        // ],
-                        // 'attendees': attendeesArrayObjects
-                        // [
-                        //   {'email': 'lpage@example.com'},
-                        //   {'email': 'sbrin@example.com'}
-                        // ]
-                        // ,
-                        // 'reminders': {
-                        //   'useDefault': false,
-                        //   'overrides': [
-                        //     {'method': 'email', 'minutes': 24 * 60},
-                        //     {'method': 'popup', 'minutes': 10}
-                        //   ]
-                        // }
                     };
                     
-                    var request = gapi.client.calendar.events.insert({
-                        'calendarId': 'primary',
-                        'resource': event,
-                    })
+            var request = gapi.client.calendar.events.insert({
+                'calendarId': 'primary',
+                'resource': event,
+            })
 
-                    request.execute(newEvent => {
-                        console.log('Event created with id: ' + newEvent.id);
-                        window.open(newEvent.htmlLink);
-                    })
-                });
+            request.execute(async (newEvent) => {
+                console.log('Event created with id: ' + newEvent.id);
+                await callback(newEvent.id);
+                window.open(newEvent.htmlLink);
+            })
         })
-        
     }
 
+    const logoutGoogle = () =>{
+        gapi.auth2.getAuthInstance().signOut();
+    }
 
-    return { addEvent }
+    return { addEvent, logoutGoogle }
 }
 
 export default useCal

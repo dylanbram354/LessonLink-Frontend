@@ -51,11 +51,32 @@ export default function CreateLessonForm(props){
                 'dateTime':`${values.endTime}:00${offset}`
             };
             let summaryString = `Lesson with ${student.firstName} ${student.lastName}`;
-            let attendees = [{'email': `${user.email}`}];
-            await addEvent(startObject, endObject, summaryString);
+            await addEvent( startObject, endObject, summaryString, addLesson); //pass addLesson as a callback, and do it inside the useCal hook itself
         }
         catch(err){
             alert(err)
+        }
+    }
+
+    async function addLesson(eventId = null){
+        let location = values.location;
+        if (typeof values.location == 'undefined'){
+            location = null;
+        }
+        let newLesson = {
+            startTime: values.startTime,
+            endTime: values.endTime,
+            googleEventId: eventId,
+            location: location,
+            feeAmount: parseFloat(values.feeAmount)
+        };
+        console.log(newLesson);
+        try{
+            let response = await axios.post(`https://localhost:44394/api/lessons/create/studentId=${values.studentId}`, newLesson, {headers: {Authorization: 'Bearer ' + user.token}});
+            console.log('line 71' + response.data);
+        }
+        catch(err){
+            alert(err);
         }
     }
 
@@ -63,7 +84,6 @@ export default function CreateLessonForm(props){
         if (values.addToGoogle == true){
             await createGoogleEvent();
         }
-        console.log(values);
         return
     }
 
