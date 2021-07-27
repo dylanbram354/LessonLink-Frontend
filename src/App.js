@@ -8,6 +8,8 @@ import Login from './components/login';
 import NavBar from './components/navBar';
 import EditLessonForm from './components/editLessonForm';
 import CreateLessonForm from './components/createLessonForm';
+import LogPaymentForm from './components/logPaymentForm';
+import PaymentRecords from './components/paymentRecords';
 
 function App() {
 
@@ -64,6 +66,32 @@ function App() {
               }
               else{
                 return <EditLessonForm {...props} user={user}/>
+              }
+          }} />
+          <Route 
+          path='/payment' 
+          render={props => {
+              if (!user){
+                return <Redirect to="/" />;
+              }
+              else if (user.role != "Teacher"){
+                return <Redirect to="/" />;
+              }
+              else{
+                return <LogPaymentForm {...props} user={user}/>
+              }
+          }} />
+          <Route 
+          path='/paymentRecords' 
+          render={props => {
+              if (!user){
+                return <Redirect to="/" />;
+              }
+              else if (user.role != "Teacher"){
+                return <Redirect to="/" />;
+              }
+              else{
+                return <PaymentRecords {...props} user={user}/>
               }
           }} />
           <Route 
