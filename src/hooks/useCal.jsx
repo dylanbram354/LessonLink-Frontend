@@ -40,15 +40,15 @@ const useCal = (props) => {
                         //   'timeZone': 'America/Los_Angeles'
                         // }
                         ,
-                        'recurrence': [
-                          'RRULE:FREQ=DAILY;COUNT=1'
-                        ],
-                        'attendees': attendeesArrayObjects
+                        // 'recurrence': [
+                        //   'RRULE:FREQ=DAILY;COUNT=1'
+                        // ],
+                        // 'attendees': attendeesArrayObjects
                         // [
                         //   {'email': 'lpage@example.com'},
                         //   {'email': 'sbrin@example.com'}
                         // ]
-                        ,
+                        // ,
                         // 'reminders': {
                         //   'useDefault': false,
                         //   'overrides': [

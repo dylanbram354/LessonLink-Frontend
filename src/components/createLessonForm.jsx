@@ -3,10 +3,12 @@ import useForm from '../hooks/useForm';
 import axios from 'axios';
 import { Form, Button, Card, Container, InputGroup } from 'react-bootstrap';
 import moment from 'moment';
+import useCal from '../hooks/useCal';
 
 export default function CreateLessonForm(props){
 
     const { values, handleChange, handleSubmit, setValues } = useForm(submitForm);
+    const { addEvent } = useCal();
     const [user, setUser] = useState(props.user);
     const [myStudents, setMyStudents] = useState(null);
     const [today, setToday] = useState(() => { let date = moment().format(); return date.substring(0, date.length-9) + ':00.00'});
@@ -26,7 +28,41 @@ export default function CreateLessonForm(props){
         }
     }
 
-    async function submitForm(){
+    function createOffset(date) {
+        function pad(value) {
+            return value < 10 ? '0' + value : value;
+        };
+        var sign = (date.getTimezoneOffset() > 0) ? "-" : "+";
+        var offset = Math.abs(date.getTimezoneOffset());
+        var hours = pad(Math.floor(offset / 60));
+        var minutes = pad(offset % 60);
+        return sign + hours + ":" + minutes;
+    }
+
+    async function createGoogleEvent(){
+        let offset = createOffset(new Date());
+        let student = myStudents.filter(stu => {return stu.student.id === values.studentId});
+        student = student[0].student;
+        try{
+            let startObject = {
+                'dateTime':`${values.startTime}:00${offset}`
+            };
+            let endObject = {
+                'dateTime':`${values.endTime}:00${offset}`
+            };
+            let summaryString = `Lesson with ${student.firstName} ${student.lastName}`;
+            let attendees = [{'email': `${user.email}`}];
+            await addEvent(startObject, endObject, summaryString);
+        }
+        catch(err){
+            alert(err)
+        }
+    }
+
+    async function submitForm(){ 
+        if (values.addToGoogle == true){
+            await createGoogleEvent();
+        }
         console.log(values);
         return
     }
@@ -43,7 +79,7 @@ export default function CreateLessonForm(props){
                     <h1>Schedule lesson</h1>
                     <Form onSubmit={handleSubmit}>
                         {myStudents ? 
-                            <Form.Group className='mt-2' controlId="studentid">
+                            <Form.Group className='mt-2' controlId="studentId">
                                 <Form.Label>Select student</Form.Label>
                                 <Form.Select name="studentId" onChange={handleChange} value={values.studentId} required={true}>
                                     <option key='1' value=''>Select a student</option>
