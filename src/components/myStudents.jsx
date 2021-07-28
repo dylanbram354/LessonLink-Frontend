@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Card, Form } from 'react-bootstrap';
+import { Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 export default function MyStudents(props){
 
@@ -43,7 +44,7 @@ export default function MyStudents(props){
     }
 
     function generateLessonLinkOption(lesson){
-        return <p>Lesson Id: {lesson.lessonId}</p>
+        return <Dropdown.Item as={Link} to={{pathname: '/lessonRecord', state: { lessonId: lesson.lessonId }}}>Lesson Id: {lesson.lessonId}</Dropdown.Item> 
     }
 
     function generateStudentCard(student){
@@ -57,8 +58,15 @@ export default function MyStudents(props){
                         {student.student.phoneNumber} <br />
                         Parent email: {student.student.parentEmail} <br />
                         Outstanding balance: ${student.balance} <br />
-                        {studentLessons.map(lesson => generateLessonLinkOption(lesson))}
-                        {/* document stuff? */}
+                        <Dropdown>
+                            <Dropdown.Toggle >
+                                Lesson records
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {studentLessons.map(lesson => generateLessonLinkOption(lesson))}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Button>Post Document (modal?)</Button>
                     </Card.Text>
                 </Card.Body>
             </Card>
@@ -72,14 +80,14 @@ export default function MyStudents(props){
             cardDisplay.push(
                 <div key='i' className='row mt-4'>
                     {myStudents[i] ?
-                        <div className='col'>
+                        <div className='col-12 col-md-4'>
                             {generateStudentCard(myStudents[i])}
                         </div>
                         :
-                        <div className='col' />
+                        <div className='col-12 col-md-4' />
                     }
                     {myStudents[i+1] ?
-                        <div className='col'>
+                        <div className='col-12 col-md-4'>
                             {generateStudentCard(myStudents[i+1])}
                         </div>
                         :
@@ -107,7 +115,14 @@ export default function MyStudents(props){
         <React.Fragment>
             <h1 className='text-center'>List of students goes here. Include links to lesson records and documents.</h1>
             {myStudents && sortedLessons ? 
-            generateStudentDisplay()
+            <div className='row'>
+                <div className= 'col' />
+                <div className= 'col-10'>
+                    {generateStudentDisplay()}
+                </div>
+                <div className='col' />
+            </div>
+            
             :
             <p className='text-center'>Loading students...</p>
             }
