@@ -25,7 +25,6 @@ export default function LandingPage(props){
             let lessons = response.data;
             lessons.sort(function(a,b){return a.startTime.localeCompare(b.startTime)});
             setMyLessons(lessons);
-            console.log(lessons);
         }
         catch(err){
             alert(err)

@@ -76,7 +76,7 @@ export default function DocumentDropdown(props){
                 <Dropdown.Item key={doc.documentId}>
                     {doc.documentName} || 
                     <Button size='sm' className='m-1' onClick={() => downloadFile(doc.documentId)}>Download</Button>
-                    <Button size='sm' variant='danger' className='m-1' onClick={() => deleteFile(doc.documentId)}>Delete</Button>
+                    {user.role==='Teacher' && <Button size='sm' variant='danger' className='m-1' onClick={() => deleteFile(doc.documentId)}>Delete</Button>}
                 </Dropdown.Item>
             )
         })
@@ -97,7 +97,7 @@ export default function DocumentDropdown(props){
             :
             <Dropdown>
                 <Dropdown.Toggle variant='success'>
-                    All Files
+                    Select
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {generateDropdownLinks()}

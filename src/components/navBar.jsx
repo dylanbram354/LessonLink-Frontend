@@ -27,7 +27,7 @@ export default function NavBar(props){
                                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link as={Link} to="myStudents">Students</Nav.Link>
+                                        <Nav.Link as={Link} to="myRelationships">Students</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
                                         <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>
@@ -48,6 +48,9 @@ export default function NavBar(props){
                             <Nav>
                                 <Nav.Item className="text-lg"> 
                                     <Nav.Link as={Link} to="/">Home</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to="myRelationships">Teachers</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>

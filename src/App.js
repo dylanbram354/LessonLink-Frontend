@@ -11,7 +11,7 @@ import CreateLessonForm from './components/createLessonForm';
 import LogPaymentForm from './components/logPaymentForm';
 import PaymentRecords from './components/paymentRecords';
 import LessonRecord from './components/lessonRecord';
-import MyStudents from './components/myStudents';
+import MyRelationships from './components/myRelationships';
 
 function App() {
 
@@ -58,16 +58,13 @@ function App() {
               }
           }} />
           <Route 
-          path='/myStudents' 
+          path='/myRelationships' 
           render={props => {
               if (!user){
                 return <Redirect to="/" />;
               }
-              else if (user.role != "Teacher"){
-                return <Redirect to="/" />;
-              }
               else{
-                return <MyStudents {...props} user={user}/>
+                return <MyRelationships {...props} user={user}/>
               }
           }} />
           <Route 

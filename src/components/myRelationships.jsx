@@ -6,15 +6,21 @@ import useDates from '../hooks/useDates';
 import DocumentUploadForm from './documentUploadForm';
 import DocumentDropdown from './documentDropdown';
 
-export default function MyStudents(props){
+export default function MyRelationships(props){
 
     const [user, setUser] = useState(props.user);
     const [myStudents, setMyStudents] = useState(null);
     const [sortedLessons, setSortedLessons] = useState(null);
+    const [myTeachers, setMyTeachers] = useState(null);
     const { sortLessonsByDate, sortLessonsByExactTime, getTimeFromDateObject, getDateFromDateObject } = useDates();
 
     useEffect(() => {
-        getMyStudentsAndLessons();
+        if (user.role === 'Teacher'){
+            getMyStudentsAndLessons();
+        }
+        else{
+            getMyTeachersAndLessons();
+        }
     }, []);
 
     async function getMyStudentsAndLessons(){
@@ -36,6 +42,26 @@ export default function MyStudents(props){
         }
     }
 
+    async function getMyTeachersAndLessons(){
+        try{
+            let response = await axios.get(`https://localhost:44394/api/users/my_teachers`, {headers: {Authorization: 'Bearer ' + user.token}});
+            let teachers = response.data;
+            let lessons = await Promise.all(teachers.map(async teacher => {
+                let lessonList = await getLessonsByRelationshipId(teacher.relationshipId);
+                return {
+                    relationshipId: teacher.relationshipId,
+                    lessons: lessonList
+                }
+            }));
+            console.log(teachers);
+            setSortedLessons(lessons);
+            setMyTeachers(teachers);
+        }
+        catch(err){
+            alert('Error getting teachers.\n' + err)
+        }
+    }
+
     async function getLessonsByRelationshipId(id){
         try{
             let response = await axios.get(`https://localhost:44394/api/lessons/relationshipId=${id}`, {headers: {Authorization: 'Bearer ' + user.token}});
@@ -53,8 +79,8 @@ export default function MyStudents(props){
         </Dropdown.Item> 
     }
 
-    function generateLessonDropdowns(studentLessons){
-        let sortedLessons = sortLessonsByExactTime(studentLessons);
+    function generateLessonDropdowns(lessons){
+        let sortedLessons = sortLessonsByExactTime(lessons);
         return(
             <div className='row'>
                 <div className='col text-center m-2'>
@@ -109,7 +135,71 @@ export default function MyStudents(props){
         )
     }
 
+    function generateTeacherCard(teacher){
+        let studentLessons = sortedLessons.filter(item => {return item.relationshipId == teacher.relationshipId})[0].lessons;
+        return(
+            <Card className='ml-2 mr-2'>
+                <Card.Body>
+                    <Card.Title>{teacher.teacher.firstName} {teacher.teacher.lastName}</Card.Title>
+                    <Card.Text>
+                        {teacher.teacher.email} <br />
+                        {teacher.teacher.teacher} <br />
+                        Preferred contact: {teacher.teacher.preferredContact} <br />
+                        Outstanding balance: ${teacher.balance} <br />
+                        <h5 className='mt-2'>Lessons:</h5>
+                        {generateLessonDropdowns(studentLessons)}
+                        <h5 className='mt-2'>Files:</h5>
+                        <div className='row'>
+                            <div className='col text-center m-2'>
+                                <DocumentDropdown user={user} relationshipId={teacher.relationshipId}/>
+                            </div>
+                        </div>
+                    </Card.Text>
+                </Card.Body>
+            </Card>
+        )
+    }
+
     function generateStudentDisplay(){
+        console.log('rendering')
+        let cardDisplay = [];
+
+        for (let i=0; i<myTeachers.length; i = i+3){
+            cardDisplay.push(
+                <div key='i' className='row mt-4'>
+                    {myTeachers[i] ?
+                        <div className='col-12 col-md-4'>
+                            {generateTeacherCard(myTeachers[i])}
+                        </div>
+                        :
+                        <div className='col-12 col-md-4' />
+                    }
+                    {myTeachers[i+1] ?
+                        <div className='col-12 col-md-4'>
+                            {generateTeacherCard(myTeachers[i+1])}
+                        </div>
+                        :
+                        <div className='col' />
+                    }
+                    {myTeachers[i+2] ?
+                        <div className='col'>
+                            {generateTeacherCard(myTeachers[i+2])}
+                        </div>
+                        :
+                        <div className='col' />
+                    }
+                </div>
+            )
+        }
+
+        return(
+            <React.Fragment>
+                {cardDisplay}
+            </React.Fragment>
+        )
+    }
+
+    function generateTeacherDisplay(){
         let cardDisplay = [];
 
         for (let i=0; i<myStudents.length; i = i+3){
@@ -149,19 +239,40 @@ export default function MyStudents(props){
 
     return(
         <React.Fragment>
-            <h1 className='text-center'>Students</h1>
-            {myStudents && sortedLessons ? 
-            <div className='row'>
-                <div className= 'col' />
-                <div className= 'col-10'>
-                    {generateStudentDisplay()}
-                </div>
-                <div className='col' />
-            </div>
-            
+            {user.role === 'Teacher' ? 
+            <React.Fragment>
+                <h1 className='text-center'>Students</h1>
+                {myStudents && sortedLessons ? 
+                <React.Fragment>
+                    <div className='row'>
+                        <div className='col'/>
+                        <div className= 'col-10'>
+                            {generateTeacherDisplay()}
+                        </div>
+                        <div className='col'/>
+                    </div>
+                </React.Fragment>
+                :
+                <p className='text-center'>Loading...</p>
+                }
+            </React.Fragment>
             :
-            <p className='text-center'>Loading students...</p>
-            }
+            <React.Fragment>
+                <h1 className='text-center'>Teachers</h1>
+                {myTeachers && sortedLessons ? 
+                <React.Fragment>
+                    <div className='row'>
+                        <div className='col'/>
+                        <div className= 'col-10'>
+                            {generateStudentDisplay()}
+                        </div>
+                        <div className='col'/>
+                    </div>
+                </React.Fragment>
+                :
+                <p className='text-center'>Loading...</p>
+                }
+            </React.Fragment>}
         </React.Fragment>
     )
 }
