@@ -4,6 +4,7 @@ import { Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import useDates from '../hooks/useDates';
 import DocumentUploadForm from './documentUploadForm';
+import DocumentDropdown from './documentDropdown';
 
 export default function MyStudents(props){
 
@@ -56,20 +57,20 @@ export default function MyStudents(props){
         let sortedLessons = sortLessonsByExactTime(studentLessons);
         return(
             <div className='row'>
-                <div className='col'>
-                    <Dropdown className='m-2'>
-                        <Dropdown.Toggle variant='warning'>
-                            Previous
+                <div className='col text-center m-2'>
+                    <Dropdown>
+                        <Dropdown.Toggle variant='info'>
+                            Past
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {sortedLessons.past.reverse().map(lesson => generateLessonLinkOption(lesson))}
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <div className='col'>
-                    <Dropdown className='m-2'>
-                        <Dropdown.Toggle >
-                            Scheduled
+                <div className='col text-center m-2'>
+                    <Dropdown>
+                        <Dropdown.Toggle variant='warning'>
+                            Upcoming
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {sortedLessons.upcoming.reverse().map(lesson => generateLessonLinkOption(lesson))}
@@ -91,8 +92,17 @@ export default function MyStudents(props){
                         {student.student.phoneNumber} <br />
                         Parent email: {student.student.parentEmail} <br />
                         Outstanding balance: ${student.balance} <br />
+                        <h5 className='mt-2'>Lessons:</h5>
                         {generateLessonDropdowns(studentLessons)}
-                        <DocumentUploadForm user={user} student={student}/>
+                        <h5 className='mt-2'>Documents:</h5>
+                        <div className='row'>
+                            <div className='col text-center m-2'>
+                                <DocumentDropdown user={user} relationshipId={student.relationshipId}/>
+                            </div>
+                            <div className='col text-center m-2'>
+                                <DocumentUploadForm user={user} student={student}/>
+                            </div>
+                        </div>
                     </Card.Text>
                 </Card.Body>
             </Card>
