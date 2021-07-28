@@ -25,6 +25,7 @@ export default function LandingPage(props){
             let lessons = response.data;
             lessons.sort(function(a,b){return a.startTime.localeCompare(b.startTime)});
             setMyLessons(lessons);
+            console.log(lessons);
         }
         catch(err){
             alert(err)
@@ -95,6 +96,76 @@ export default function LandingPage(props){
         return (`${month}/${day}/${year}`)
     }
 
+    function generateStudentLessonTable(){
+        let sortedLessons = sortLessonsByDate(myLessons);
+        let todayData = sortedLessons.today.map(lesson => {
+            return(
+                <tr>
+                    <td>{lesson.relationship.teacher.firstName} {lesson.relationship.teacher.lastName}</td>
+                    <td>{getTimeFromDateObject(new Date(lesson.startTime))}</td>
+                    <td>{getTimeFromDateObject(new Date(lesson.endTime))}</td>
+                    <td>${lesson.feeAmount}</td>
+                    {lesson.location ? <td>{lesson.location}</td> : <td>No data</td>}
+                </tr>
+            )
+        });
+
+        let upcomingData = sortedLessons.upcoming.map(lesson => {
+            return(
+                <tr>
+                    <td>{lesson.relationship.teacher.firstName} {lesson.relationship.teacher.lastName}</td>
+                    <td>{getDateFromDateObject(new Date(lesson.startTime))}</td>
+                    <td>{getTimeFromDateObject(new Date(lesson.startTime))}</td>
+                    <td>{getTimeFromDateObject(new Date(lesson.endTime))}</td>
+                    <td>${lesson.feeAmount}</td>
+                    {lesson.location ? <td>{lesson.location}</td> : <td>No data</td>}
+                </tr>
+            )
+        })
+
+        return(
+            <React.Fragment>
+                {todayData.length > 0 && 
+                    <div className='mb-4'>
+                        <h2>You have a lesson today!</h2>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Teacher</th>
+                                    <th>Start time</th>
+                                    <th>End time</th>
+                                    <th>Fee amount</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {todayData}
+                            </tbody>
+                        </Table>
+                    </div>
+                }
+                <div>
+                    <h2>Upcoming Lessons</h2>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Date</th>
+                                <th>Start time</th>
+                                <th>End time</th>
+                                <th>Fee amount</th>
+                                <th>Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {upcomingData}
+                        </tbody>
+                    </Table>
+                </div>
+            </React.Fragment>
+        )
+    }
+
     function generateTeacherLessonTable(){
         let sortedLessons = sortLessonsByDate(myLessons);
         let todayData = sortedLessons.today.map(lesson => {
@@ -132,7 +203,7 @@ export default function LandingPage(props){
 
         return(
             <React.Fragment>
-                <div>
+                <div className='mb-4'>
                     <h2>Today's Lessons</h2>
                     <Table>
                         <thead>
@@ -175,53 +246,56 @@ export default function LandingPage(props){
     }
 
     return(
-        <React.Fragment>
-          {user ?
-            <React.Fragment>
-                {user.role === "Teacher" ?
-                    <React.Fragment>
-                    <div className='text-center'>
-                        {myLessons ? 
-                            <React.Fragment>
-                            {myLessons.length > 0 ?
-                                generateTeacherLessonTable()
-                            :
-                                <p>No lessons to display.</p>
-                            }
-                            </React.Fragment>
-                        :
+        <div className='row'>
+            <div className='col-2' />
+            <div className='col-12 col-sm-8'>
+            {user ?
+                <React.Fragment>
+                    {user.role === "Teacher" ?
                         <React.Fragment>
-                            <p>Loading...</p>
+                        <div className='text-center'>
+                            {myLessons ? 
+                                <React.Fragment>
+                                {myLessons.length > 0 ?
+                                    generateTeacherLessonTable()
+                                :
+                                    <p>No lessons to display.</p>
+                                }
+                                </React.Fragment>
+                            :
+                            <React.Fragment>
+                                <p>Loading...</p>
+                            </React.Fragment>
+                        }
+                        </div>
                         </React.Fragment>
-                    }
-                    </div>
-                    </React.Fragment>
+                    :
+                        <React.Fragment>
+                        <div className='text-center'>
+                            {myLessons ? 
+                                <React.Fragment>
+                                {myLessons.length > 0 ?
+                                    generateStudentLessonTable()
+                                :
+                                    <p>No lessons to display.</p>
+                                }
+                                </React.Fragment>
+                            :
+                            <React.Fragment>
+                                <p>Loading...</p>
+                            </React.Fragment>
+                        }
+                        </div>
+                        </React.Fragment>
+                    } 
+                </React.Fragment>
                 :
-                    <React.Fragment>
-                    <div className='text-center'>
-                        <h1>Hello student {user.username}!</h1>
-                        {myLessons ? 
-                            <React.Fragment>
-                            {myLessons.length > 0 ?
-                                <p>LESSON INFO GOES HERE</p>
-                            :
-                                <p>No lessons to display.</p>
-                            }
-                            </React.Fragment>
-                        :
-                        <React.Fragment>
-                            <p>Loading...</p>
-                        </React.Fragment>
-                    }
-                    </div>
-                    </React.Fragment>
-                } 
-            </React.Fragment>
-            :
-            <div className='text-center'>
-                <p>Logged out</p>
-            </div>
+                <div className='text-center'>
+                    <p>Logged out</p>
+                </div>
             }
-        </React.Fragment>
+            </div>
+            <div className='col-2' />
+        </div>
     )
 }

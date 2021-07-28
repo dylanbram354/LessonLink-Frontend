@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { DropdownButton, Dropdown, Button } from 'react-bootstrap';
 
 export default function DocumentDropdown(props){
 
@@ -57,12 +57,34 @@ export default function DocumentDropdown(props){
         }
     }
 
+    async function deleteFile(id){
+        if(window.confirm('Are you sure? Your student will no longer be able to access this file.')){
+            try{
+                let response = await axios.delete(`https://localhost:44394/api/documents/delete/${id}`, {headers: {Authorization: 'Bearer ' + user.token}});
+                console.log(response);
+                getDocs();
+            }
+            catch(err){
+                alert("Error deleting file.\n" + err)
+            }
+        }
+    }
+
     function generateDropdownLinks(){
         let links = docs.map(doc => {
             return(
-                <Dropdown.Item key={doc.documentId} onClick={() => downloadFile(doc.documentId)} >{doc.documentName}</Dropdown.Item>
+                <Dropdown.Item key={doc.documentId}>
+                    {doc.documentName} || 
+                    <Button size='sm' className='m-1' onClick={() => downloadFile(doc.documentId)}>Download</Button>
+                    <Button size='sm' variant='danger' className='m-1' onClick={() => deleteFile(doc.documentId)}>Delete</Button>
+                </Dropdown.Item>
             )
         })
+        if (links.length == 0){
+            return(
+                <span><Button size='sm' variant='link' onClick={() => getDocs()}>No files - click to refresh</Button></span>
+            )
+        }
         return links
     }
 
@@ -75,7 +97,7 @@ export default function DocumentDropdown(props){
             :
             <Dropdown>
                 <Dropdown.Toggle variant='success'>
-                    Download Files
+                    All Files
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {generateDropdownLinks()}

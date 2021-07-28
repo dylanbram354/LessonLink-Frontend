@@ -23,7 +23,7 @@ export default function EditLessonForm(props){
     }, [])
 
     async function putLesson(){
-        let noShow = (values.isNowShow == "true");
+        let noShow = (values.isNoShow === "true");
         let newRecord = {
             feeAmount: parseFloat(values.feeAmount),
             comments: values.comments,

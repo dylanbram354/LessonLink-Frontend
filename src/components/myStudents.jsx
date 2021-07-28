@@ -94,7 +94,7 @@ export default function MyStudents(props){
                         Outstanding balance: ${student.balance} <br />
                         <h5 className='mt-2'>Lessons:</h5>
                         {generateLessonDropdowns(studentLessons)}
-                        <h5 className='mt-2'>Documents:</h5>
+                        <h5 className='mt-2'>Files:</h5>
                         <div className='row'>
                             <div className='col text-center m-2'>
                                 <DocumentDropdown user={user} relationshipId={student.relationshipId}/>

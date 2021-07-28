@@ -7,10 +7,25 @@ export default function PaymentRecords(props){
 
     const [payments, setPayments] = useState(null);
     const [user, setUser] = useState(props.user);
+    const [relationships, setRelationships] = useState(null);
 
     useEffect(() => {
         getPayments();
+        if(user.role === 'Student'){
+            getMyRelationships();
+        }
     }, []);
+
+    async function getMyRelationships(){
+        try{
+            let response = await axios.get(`https://localhost:44394/api/relationships/get_my`, { headers: {Authorization: "Bearer " + props.user.token}});
+            console.log(response.data);
+            setRelationships(response.data);
+        }
+        catch(err){
+            alert('Error getting teacher info.\n' + err)
+        }
+    }
 
     async function getPayments(){
         try{
@@ -95,44 +110,114 @@ export default function PaymentRecords(props){
     }
 
     function generatePaymentTable(){
-        let paymentData = payments.map(payment => {
-            return (
-            <tr>
-                <td>{payment.student.firstName} {payment.student.lastName}</td>
-                <td>{getDateFromDateObject(new Date(payment.dateTime))}</td>
-                <td>{getTimeFromDateObject(new Date(payment.dateTime))}</td>
-                <td>{payment.methodName}</td>
-                <td>${payment.amount}</td>
-                <td>
-                    <Button variant='warning' onClick={() => deletePayment(payment)}>Remove Record</Button>
-                </td>
-                <td>
-                    <Button variant='danger' onClick={() => deleteAndCharge(payment)}>DELETE AND RE-CHARGE</Button>
-                </td>
-            </tr>
+        if (user.role === 'Teacher'){
+            let paymentData = payments.map(payment => {
+                return (
+                <tr>
+                    <td>{payment.student.firstName} {payment.student.lastName}</td>
+                    <td>{getDateFromDateObject(new Date(payment.dateTime))}</td>
+                    <td>{getTimeFromDateObject(new Date(payment.dateTime))}</td>
+                    <td>{payment.methodName}</td>
+                    <td>${payment.amount}</td>
+                    <td>
+                        <Button variant='warning' onClick={() => deletePayment(payment)}>Remove Record</Button>
+                    </td>
+                    <td>
+                        <Button variant='danger' onClick={() => deleteAndCharge(payment)}>DELETE AND RE-CHARGE</Button>
+                    </td>
+                </tr>
+                )
+            })
+    
+            return(
+                <div>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Method</th>
+                                <th>Amount</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paymentData}
+                        </tbody>
+                    </Table>
+                </div>
+            )
+        }
+        else{
+            let paymentData = payments.map(payment => {
+                return (
+                <tr key={payment.paymentId}>
+                    <td>{payment.teacher.firstName} {payment.teacher.lastName}</td>
+                    <td>{getDateFromDateObject(new Date(payment.dateTime))}</td>
+                    <td>{getTimeFromDateObject(new Date(payment.dateTime))}</td>
+                    <td>{payment.methodName}</td>
+                    <td>${payment.amount}</td>
+                </tr>
+                )
+            })
+            return(
+                <div className='row'>
+                    <div className='col' />
+                    <div className='col col-sm-8'>
+                        <h4>Payment Records</h4>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Teacher</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Method</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paymentData}
+                            </tbody>
+                        </Table>
+                    </div>
+                    <div className='col' />
+                </div>
+            )
+        }
+
+    }
+
+    function generateBalanceTable(){
+        let balanceData = relationships.map( r => {
+            return(
+                <tr>
+                    <td>{r.teacher.firstName} {r.teacher.lastName}</td>
+                    <td>${r.balance}</td>
+                </tr>
             )
         })
-
         return(
-            <div>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Method</th>
-                            <th>Amount</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paymentData}
-                    </tbody>
-                </Table>
+            <div className='row'>
+                <div className='col' />
+                <div className='col-12 col-sm-6'>
+                    <h4>Balance Info</h4>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {balanceData}
+                        </tbody>
+                    </Table>
+                </div>
+                <div className='col' />
             </div>
-        )
+        )   
     }
 
     return(
@@ -141,7 +226,8 @@ export default function PaymentRecords(props){
                 {/* <div className='col' /> */}
                 <div className='col'>
                     <h1>Payment records - {user.username}</h1>
-                    <Button as={Link} to='payment' variant='success' >Add Payment</Button>
+                    {user.role==='Teacher' && <Button as={Link} to='payment' variant='success' >Add Payment</Button>}
+                    {user.role ==='Student' && relationships && generateBalanceTable()}
                     {payments ? 
                         <React.Fragment>
                         {payments.length > 0 ?

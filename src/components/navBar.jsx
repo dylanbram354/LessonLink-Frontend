@@ -46,7 +46,12 @@ export default function NavBar(props){
                         <Container>
                             <Navbar.Brand>LessonLink</Navbar.Brand>
                             <Nav>
-                                <Nav.Item>student links</Nav.Item>
+                                <Nav.Item className="text-lg"> 
+                                    <Nav.Link as={Link} to="/">Home</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>
+                                </Nav.Item>
                                 <Nav.Item>
                                     {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
                                 </Nav.Item>  

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Redirect, Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 
 export default function LessonRecord(props){
 
@@ -17,12 +17,13 @@ export default function LessonRecord(props){
             getLessonRecord();
         }
         
-    })
+    }, [])
 
     async function getLessonRecord(){
         try{
             let response = await axios.get(`https://localhost:44394/api/lessons/${props.location.state.lessonId}`, {headers: {Authorization: 'Bearer ' + user.token}});
             setLesson(response.data);
+            console.log(response.data);
         }
         catch(err){
             alert('Error getting lesson record!\n' + err)
@@ -60,16 +61,23 @@ export default function LessonRecord(props){
             {lesson ? 
             <div className='row'>
                 <div className='col' />
-                <div className='col text-center'>
-                    {new Date(lesson.endTime).getTime() > new Date().getTime() ? <h2>Scheduled Lesson</h2> : <h2>Lesson Record</h2>}
-                    <h4>{lesson.relationship.teacher.firstName} {lesson.relationship.teacher.lastName} and {lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</h4>
-                    <p>{getDateFromDateObject(new Date(lesson.startTime))}, {getTimeFromDateObject(new Date(lesson.startTime))} - {getTimeFromDateObject(new Date(lesson.endTime))} </p>
-                    {lesson.location && <p> {lesson.location}</p>}
-                    <p><strong>Fee: </strong>${lesson.feeAmount}</p>
-                    {lesson.comments && <p><strong>Teacher comments: </strong>{lesson.comments}</p>}
-                    <p><strong>Attendance: </strong>{lesson.isNoShow ? 'Present' : 'NO-SHOW' }</p>
-                    {new Date(lesson.endTime).getTime() < new Date().getTime() &&
-                        <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Edit</Button>}
+                <div className='col'>
+                    <Card>
+                        <Card.Body className='text-center'>
+                            <Card.Title className='mb-1'>{new Date(lesson.endTime).getTime() > new Date().getTime() ? <h2>Scheduled Lesson</h2> : <h2>Lesson Record</h2>}</Card.Title>
+                            <Card.Text>
+                                <h4 className='mb-3'>{lesson.relationship.teacher.firstName} {lesson.relationship.teacher.lastName} and {lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</h4>
+                                <p>{getDateFromDateObject(new Date(lesson.startTime))}, {getTimeFromDateObject(new Date(lesson.startTime))} - {getTimeFromDateObject(new Date(lesson.endTime))} </p>
+                                {lesson.location && <p> {lesson.location}</p>}
+                                <p><strong>Fee: </strong>${lesson.feeAmount}</p>
+                                {lesson.comments && <p><strong>Teacher comments: </strong>{lesson.comments}</p>}
+                                {new Date(lesson.endTime).getTime() < new Date().getTime() &&
+                                    <p><strong>Attendance: </strong>{!lesson.isNoShow ? 'Present' : 'NO-SHOW' }</p>}
+                                {new Date(lesson.endTime).getTime() < new Date().getTime() && user.role=='Teacher' &&
+                                    <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Edit</Button>}
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
                 </div>
                 <div className='col' />
             </div>

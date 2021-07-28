@@ -112,9 +112,6 @@ function App() {
               if (!user){
                 return <Redirect to="/" />;
               }
-              else if (user.role != "Teacher"){
-                return <Redirect to="/" />;
-              }
               else{
                 return <PaymentRecords {...props} user={user}/>
               }

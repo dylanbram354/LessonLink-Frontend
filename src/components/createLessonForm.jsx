@@ -75,7 +75,7 @@ export default function CreateLessonForm(props){
         console.log(newLesson);
         try{
             let response = await axios.post(`https://localhost:44394/api/lessons/create/studentId=${values.studentId}`, newLesson, {headers: {Authorization: 'Bearer ' + user.token}});
-            console.log('line 71' + response.data);
+            setRedirect(true);
         }
         catch(err){
             alert(err);
@@ -85,7 +85,6 @@ export default function CreateLessonForm(props){
     async function submitForm(){ 
         if (values.addToGoogle == true){
             await createGoogleEvent();
-            setRedirect(true);
         }
         else{
             await addLesson();
