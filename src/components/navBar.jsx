@@ -27,16 +27,13 @@ export default function NavBar(props){
                                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link as={Link} to="myStudents">My Students</Nav.Link>
+                                        <Nav.Link as={Link} to="myStudents">Students</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link as={Link} to="createLesson">Schedule Lesson</Nav.Link>
+                                        <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link as={Link} to="payment">Log Payment</Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item>
-                                        <Nav.Link as={Link} to="paymentRecords">Payment Records</Nav.Link>
+                                        <Nav.Link as={Link} to="createLesson">New Lesson</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
                                         {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}

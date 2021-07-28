@@ -89,7 +89,7 @@ export default function EditLessonForm(props){
                             </Form.Group>
                             <Form.Group className='mt-2' controlId='comments'>
                                 <Form.Label>Comments, links, or assignments for {lesson.relationship.student.firstName}:</Form.Label>
-                                <Form.Control as='textarea' rows={3} name='comments' onChange={handleChange} value={values.comments}/>
+                                <Form.Control as='textarea' placeholder={lesson.comments} rows={3} name='comments' onChange={handleChange} value={values.comments}/>
                             </Form.Group>
                             <Form.Group className='mt-2' controlId="isNoShow">
                                 <Form.Label>Did {lesson.relationship.student.firstName} attend the lesson?</Form.Label>

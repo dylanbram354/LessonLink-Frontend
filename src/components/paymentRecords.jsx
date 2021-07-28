@@ -141,6 +141,7 @@ export default function PaymentRecords(props){
                 {/* <div className='col' /> */}
                 <div className='col'>
                     <h1>Payment records - {user.username}</h1>
+                    <Button as={Link} to='payment' variant='success' >Add Payment</Button>
                     {payments ? 
                         <React.Fragment>
                         {payments.length > 0 ?

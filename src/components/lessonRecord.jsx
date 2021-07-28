@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 export default function LessonRecord(props){
 
@@ -60,13 +61,15 @@ export default function LessonRecord(props){
             <div className='row'>
                 <div className='col' />
                 <div className='col text-center'>
-                    <h2>Lesson Record</h2>
+                    {new Date(lesson.endTime).getTime() > new Date().getTime() ? <h2>Scheduled Lesson</h2> : <h2>Lesson Record</h2>}
                     <h4>{lesson.relationship.teacher.firstName} {lesson.relationship.teacher.lastName} and {lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</h4>
-                    <p>{getDateFromDateObject(new Date(lesson.startTime))}, {getTimeFromDateObject(new Date(lesson.startTime))} - {getTimeFromDateObject(new Date(lesson.endTime))}</p>
+                    <p>{getDateFromDateObject(new Date(lesson.startTime))}, {getTimeFromDateObject(new Date(lesson.startTime))} - {getTimeFromDateObject(new Date(lesson.endTime))} </p>
                     {lesson.location && <p> {lesson.location}</p>}
                     <p><strong>Fee: </strong>${lesson.feeAmount}</p>
-                    <p><strong>Teacher comments: </strong>{lesson.comments ? lesson.comments : 'None'}</p>
+                    {lesson.comments && <p><strong>Teacher comments: </strong>{lesson.comments}</p>}
                     <p><strong>Attendance: </strong>{lesson.isNoShow ? 'Present' : 'NO-SHOW' }</p>
+                    {new Date(lesson.endTime).getTime() < new Date().getTime() &&
+                        <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Edit</Button>}
                 </div>
                 <div className='col' />
             </div>

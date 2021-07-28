@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import useDates from '../hooks/useDates';
+import DocumentUploadForm from './documentUploadForm';
 
 export default function MyStudents(props){
 
     const [user, setUser] = useState(props.user);
     const [myStudents, setMyStudents] = useState(null);
     const [sortedLessons, setSortedLessons] = useState(null);
+    const { sortLessonsByDate, sortLessonsByExactTime, getTimeFromDateObject, getDateFromDateObject } = useDates();
 
     useEffect(() => {
         getMyStudentsAndLessons();
@@ -44,7 +47,37 @@ export default function MyStudents(props){
     }
 
     function generateLessonLinkOption(lesson){
-        return <Dropdown.Item as={Link} to={{pathname: '/lessonRecord', state: { lessonId: lesson.lessonId }}}>Lesson Id: {lesson.lessonId}</Dropdown.Item> 
+        return <Dropdown.Item as={Link} to={{pathname: '/lessonRecord', state: { lessonId: lesson.lessonId }}}>
+            {getDateFromDateObject(new Date(lesson.startTime))}, {getTimeFromDateObject(new Date(lesson.startTime))} - {getTimeFromDateObject(new Date(lesson.endTime))}
+        </Dropdown.Item> 
+    }
+
+    function generateLessonDropdowns(studentLessons){
+        let sortedLessons = sortLessonsByExactTime(studentLessons);
+        return(
+            <div className='row'>
+                <div className='col'>
+                    <Dropdown className='m-2'>
+                        <Dropdown.Toggle variant='warning'>
+                            Previous
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            {sortedLessons.past.reverse().map(lesson => generateLessonLinkOption(lesson))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+                <div className='col'>
+                    <Dropdown className='m-2'>
+                        <Dropdown.Toggle >
+                            Scheduled
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            {sortedLessons.upcoming.reverse().map(lesson => generateLessonLinkOption(lesson))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+            </div>
+        )
     }
 
     function generateStudentCard(student){
@@ -58,15 +91,8 @@ export default function MyStudents(props){
                         {student.student.phoneNumber} <br />
                         Parent email: {student.student.parentEmail} <br />
                         Outstanding balance: ${student.balance} <br />
-                        <Dropdown>
-                            <Dropdown.Toggle >
-                                Lesson records
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {studentLessons.map(lesson => generateLessonLinkOption(lesson))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <Button>Post Document (modal?)</Button>
+                        {generateLessonDropdowns(studentLessons)}
+                        <DocumentUploadForm user={user} student={student}/>
                     </Card.Text>
                 </Card.Body>
             </Card>
@@ -113,7 +139,7 @@ export default function MyStudents(props){
 
     return(
         <React.Fragment>
-            <h1 className='text-center'>List of students goes here. Include links to lesson records and documents.</h1>
+            <h1 className='text-center'>Students</h1>
             {myStudents && sortedLessons ? 
             <div className='row'>
                 <div className= 'col' />
