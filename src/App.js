@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Route, Link, Redirect, Switch} from 'react-router-dom';
-import useCal from './hooks/useCal';
-import LandingPage from './components/landingPage';
+import useCal from './helpers/useCal';
+import Schedule from './components/schedule';
 import Register from './components/register';
 import Login from './components/login';
 import NavBar from './components/navBar';
@@ -45,7 +45,7 @@ function App() {
     <React.Fragment>
       <NavBar user={user} logout={logout}/>
       <Switch>
-        <Route path="/" exact render={(props) => (<LandingPage {...props} user={user} token={token}/>)} />
+        {/* <Route path="/" exact render={(props) => (<Schedule {...props} user={user} token={token}/>)} /> */}
         <Route path="/register" component={Register} />
         <Route 
           path='/login' 
@@ -57,14 +57,15 @@ function App() {
                   return <Login {...props} getToken={getToken}/>
               }
           }} />
+          <Route path="/" exact render={(props) => (<MyRelationships {...props} user={user} token={token}/>)} />
           <Route 
-          path='/myRelationships' 
+          path='/schedule' 
           render={props => {
               if (!user){
                 return <Redirect to="/" />;
               }
               else{
-                return <MyRelationships {...props} user={user}/>
+                return <Schedule {...props} user={user} token={token}/>
               }
           }} />
           <Route 

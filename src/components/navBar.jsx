@@ -24,17 +24,17 @@ export default function NavBar(props){
                                 <Navbar.Brand>LessonLink</Navbar.Brand>
                                 <Nav>
                                     <Nav.Item className="text-lg"> 
-                                        <Nav.Link as={Link} to="/">Home</Nav.Link>
+                                        <Nav.Link as={Link} to="/">Students</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link as={Link} to="myRelationships">Students</Nav.Link>
+                                        <Nav.Link as={Link} to="schedule">Schedule</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
                                         <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>
                                     </Nav.Item>
-                                    <Nav.Item>
-                                        <Nav.Link as={Link} to="createLesson">New Lesson</Nav.Link>
-                                    </Nav.Item>
+                                    {/* <Nav.Item>
+                                        <Nav.Link as={Link} to="createLesson">Add Lesson</Nav.Link>
+                                    </Nav.Item> */}
                                     <Nav.Item>
                                         {!redirect ? <Button variant='danger' onClick={() => logout()} >Logout {user.username}</Button> : <Redirect to='/'/>}
                                     </Nav.Item>
@@ -47,10 +47,10 @@ export default function NavBar(props){
                             <Navbar.Brand>LessonLink</Navbar.Brand>
                             <Nav>
                                 <Nav.Item className="text-lg"> 
-                                    <Nav.Link as={Link} to="/">Home</Nav.Link>
+                                    <Nav.Link as={Link} to="/">Teachers</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link as={Link} to="myRelationships">Teachers</Nav.Link>
+                                    <Nav.Link as={Link} to="schedule">Schedule</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>

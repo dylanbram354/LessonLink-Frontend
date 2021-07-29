@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, InputGroup } from 'react-bootstrap';
-import useForm from '../hooks/useForm';
+import useForm from '../helpers/useForm';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
@@ -74,7 +74,7 @@ export default function EditLessonForm(props){
             {redirect && <Redirect to={{pathname: '/lessonRecord', state: { lessonId: lesson.lessonId }}} />}
             {lesson ? 
             <React.Fragment>
-                <h1 className='text-center'>Log lesson with {lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</h1>
+                <h1 className='text-center'>Lesson with {lesson.relationship.student.firstName} {lesson.relationship.student.lastName}</h1>
                 <h3 className='text-center'>{getDateFromDateObject(new Date(lesson.startTime))}</h3>
                 <div className='row'>
                     <div className='col' />

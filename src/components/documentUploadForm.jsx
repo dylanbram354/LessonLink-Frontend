@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Modal } from 'react-bootstrap';
-import useForm from '../hooks/useForm';
+import useForm from '../helpers/useForm';
 import axios from 'axios';
 import DocumentDropdown from './documentDropdown';
 
@@ -45,7 +45,7 @@ export default function DocumentUploadForm(props){
     return(
         <>
         <div className='text-center'>
-            <Button variant="primary" onClick={handleShow}>Upload File</Button>
+            <Button variant="primary" onClick={handleShow}>Upload</Button>
         </div>
   
         <Modal show={show} onHide={handleClose}>

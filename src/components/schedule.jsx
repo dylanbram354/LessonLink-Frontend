@@ -1,16 +1,19 @@
 import React, { useState, useEffect} from 'react';
-import useForm from '../hooks/useForm';
-import { Link } from 'react-router-dom';
+import useForm from '../helpers/useForm';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Table } from 'react-bootstrap';
 import EditLessonForm from './editLessonForm';
-import useCal from '../hooks/useCal';
+import useCal from '../helpers/useCal';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
 
-export default function LandingPage(props){
+export default function Schedule(props){
 
     const [user, setUser] = useState(null);
     const [myLessons, setMyLessons] = useState(null);
     const {addEvent, deleteEvent} = useCal();
+    const history = useHistory();
 
     useEffect(() => {
         setUser(props.user);
@@ -81,8 +84,10 @@ export default function LandingPage(props){
             m = '0'+`${m}`;
         }
         let amPm = 'AM';
-        if (h > 12){
-            h = h - 12;
+        if (h >= 12){
+            if (h!=12){
+                h = h - 12;
+            }
             amPm = 'PM';
         }
         return (`${h}:${m} ${amPm}`)
@@ -123,7 +128,7 @@ export default function LandingPage(props){
         })
 
         return(
-            <React.Fragment>
+            <div className='mt-4'>
                 {todayData.length > 0 && 
                     <div className='mb-4'>
                         <h2>You have a lesson today!</h2>
@@ -161,7 +166,8 @@ export default function LandingPage(props){
                         </tbody>
                     </Table>
                 </div>
-            </React.Fragment>
+                {generateCalendar()}
+            </div>
         )
     }
 
@@ -176,10 +182,10 @@ export default function LandingPage(props){
                     <td>{lesson.googleEventId ? 'Yes' : 'No' }</td>
                     <td>${lesson.feeAmount}</td>
                     <td>
-                        <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Log Lesson</Button>
+                        <Button as={Link} to={{pathname: '/editLesson', state: { lesson: lesson }}}>Edit Lesson Sheet</Button>
                     </td>
                     <td>
-                        <Button variant='warning' onClick={() => cancelLesson(lesson)}>Cancel Lesson</Button>
+                        <Button variant='warning' onClick={() => cancelLesson(lesson)}>Delete/Cancel</Button>
                     </td>
                 </tr>
             )
@@ -194,16 +200,17 @@ export default function LandingPage(props){
                     <td>{lesson.googleEventId ? 'Yes' : 'No' }</td>
                     <td>${lesson.feeAmount}</td>
                     <td>
-                        <Button variant='warning' onClick={() => cancelLesson(lesson)}>Cancel Lesson</Button>
+                        <Button variant='warning' onClick={() => cancelLesson(lesson)}>Delete/Cancel</Button>
                     </td>
                 </tr>
             )
         })
 
         return(
-            <React.Fragment>
-                <div className='mb-4'>
-                    <h2>Today's Lessons</h2>
+            <div className='mt-4'>
+                {todayData.length > 0 &&
+                <div className='mb-4 overflow-auto' style={{border: '2px solid grey', padding: '10px'}}>
+                    <h2>You have lessons scheduled for today!</h2>
                     <Table>
                         <thead>
                             <tr>
@@ -221,26 +228,57 @@ export default function LandingPage(props){
                         </tbody>
                     </Table>
                 </div>
+                }
                 <div>
-                    <h2>Upcoming Lessons</h2>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Date</th>
-                                <th>Start time</th>
-                                <th>End time</th>
-                                <th>Google Event</th>
-                                <th>Fee amount</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {upcomingData}
-                        </tbody>
-                    </Table>
+                    {generateCalendar()}
+                    <div className='mb-4 overflow-auto' style={{padding: '10px'}}>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Date</th>
+                                    <th>Start time</th>
+                                    <th>End time</th>
+                                    <th>Google Event</th>
+                                    <th>Fee amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {upcomingData}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-            </React.Fragment>
+            </div>
+        )
+    }
+
+    const localizer = momentLocalizer(moment);
+
+    function generateCalendar(){
+        let myEvents = myLessons.map(lesson => {
+            return (
+                {
+                    start: new Date(lesson.startTime + 'Z'), 
+                    end: new Date(lesson.endTime + 'Z'),
+                    title: `Lesson - ${lesson.relationship.student.firstName} ${lesson.relationship.student.lastName} and ${lesson.relationship.teacher.firstName} ${lesson.relationship.teacher.lastName}`,
+                    allDay: false,
+                    id: lesson.lessonId
+                }
+            )
+        });
+        return(
+            <div>
+                <Calendar
+                    localizer={localizer}
+                    defaultDate={new Date()}
+                    events={myEvents}
+                    style={{height: '50vh'}} 
+                    onSelectEvent={(e)=>{history.push({pathname: '/lessonRecord', state: { lessonId: e.id }})}}
+                    views={['month', 'week', 'day']}
+                />
+            </div>
         )
     }
 
@@ -256,7 +294,9 @@ export default function LandingPage(props){
                             {myLessons ? 
                                 <React.Fragment>
                                 {myLessons.length > 0 ?
-                                    generateTeacherLessonTable()
+                                <React.Fragment>
+                                    {generateTeacherLessonTable()}
+                                </React.Fragment>
                                 :
                                     <p>No lessons to display.</p>
                                 }
@@ -274,7 +314,9 @@ export default function LandingPage(props){
                             {myLessons ? 
                                 <React.Fragment>
                                 {myLessons.length > 0 ?
-                                    generateStudentLessonTable()
+                                <React.Fragment>
+                                    {generateStudentLessonTable()}
+                                </React.Fragment>
                                 :
                                     <p>No lessons to display.</p>
                                 }

@@ -30,7 +30,7 @@ const useDates = () => {
         let past = [];
         let now = new Date().getTime();
         lessons.map(lesson => {
-            let date = new Date(lesson.endTime).getTime();
+            let date = new Date(lesson.startTime).getTime();
             if (date > now){
                 upcoming.push(lesson);
             }
@@ -53,8 +53,10 @@ const useDates = () => {
             m = '0'+`${m}`;
         }
         let amPm = 'AM';
-        if (h > 12){
-            h = h - 12;
+        if (h >= 12){
+            if (h!=12){
+                h = h - 12;
+            }
             amPm = 'PM';
         }
         return (`${h}:${m} ${amPm}`)

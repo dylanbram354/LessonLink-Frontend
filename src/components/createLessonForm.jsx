@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import useForm from '../hooks/useForm';
+import useForm from '../helpers/useForm';
 import axios from 'axios';
 import { Form, Button, Card, Container, InputGroup } from 'react-bootstrap';
 import moment from 'moment';
-import useCal from '../hooks/useCal';
+import useCal from '../helpers/useCal';
 import { Redirect } from 'react-router';
 
 export default function CreateLessonForm(props){
@@ -53,7 +53,7 @@ export default function CreateLessonForm(props){
                 'dateTime':`${values.endTime}:00${offset}`
             };
             let summaryString = `Lesson with ${student.firstName} ${student.lastName}`;
-            await addEvent( startObject, endObject, summaryString, addLesson); //pass addLesson as a callback, and do it inside the useCal hook itself
+            await addEvent( startObject, endObject, summaryString, addLesson);
         }
         catch(err){
             alert(err)
@@ -62,14 +62,19 @@ export default function CreateLessonForm(props){
 
     async function addLesson(eventId = null){
         let location = values.location;
+        let comments = values.comments;
         if (typeof values.location == 'undefined'){
             location = null;
+        }
+        if (typeof values.comments == 'undefined'){
+            comments = null;
         }
         let newLesson = {
             startTime: values.startTime,
             endTime: values.endTime,
             googleEventId: eventId,
             location: location,
+            comments: comments,
             feeAmount: parseFloat(values.feeAmount)
         };
         console.log(newLesson);
@@ -102,7 +107,7 @@ export default function CreateLessonForm(props){
             <div className='text-center row'>
                 <div className='col' />
                 <div className='col'>
-                    <h1>Schedule lesson</h1>
+                    <h1>New Lesson</h1>
                     <Form onSubmit={handleSubmit}>
                         {myStudents ? 
                             <Form.Group className='mt-2' controlId="studentId">
@@ -117,7 +122,7 @@ export default function CreateLessonForm(props){
                         }
                         <Form.Group className='mt-2' controlId='startTime'>
                             <Form.Label>Start time</Form.Label>
-                            <Form.Control type='datetime-local' name='startTime' onChange={handleChange} value={values.startTime} min={today} required={true}/>
+                            <Form.Control type='datetime-local' name='startTime' onChange={handleChange} value={values.startTime} required={true}/>
                         </Form.Group>
                         <Form.Group className='mt-2' controlId='endTime'>
                             <Form.Label>End time</Form.Label>
@@ -125,7 +130,11 @@ export default function CreateLessonForm(props){
                         </Form.Group>
                         <Form.Group className='mt-2' controlId='location'>
                             <Form.Label>Location (optional)</Form.Label>
-                            <Form.Control as='textarea' rows={3} name='location' onChange={handleChange} value={values.location} required={false}/>
+                            <Form.Control as='textarea' rows={2} name='location' onChange={handleChange} value={values.location} required={false}/>
+                        </Form.Group>
+                        <Form.Group className='mt-2' controlId='comments'>
+                            <Form.Label>Comments (optional)</Form.Label>
+                            <Form.Control as='textarea' rows={3} name='comments' onChange={handleChange} value={values.comments} required={false}/>
                         </Form.Group>
                         <Form.Group className='mt-2' controlId='feeAmount'>
                             <Form.Label>Fee amount</Form.Label>

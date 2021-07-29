@@ -49,8 +49,10 @@ export default function PaymentRecords(props){
             m = '0'+`${m}`;
         }
         let amPm = 'AM';
-        if (h > 12){
-            h = h - 12;
+        if (h >= 12){
+            if (h!=12){
+                h = h - 12;
+            }
             amPm = 'PM';
         }
         return (`${h}:${m} ${amPm}`)
@@ -93,7 +95,7 @@ export default function PaymentRecords(props){
     }
 
     async function deletePayment(payment){
-        let confirm = window.confirm("Are you sure? This will only remove your record of this payment. It will not affect the student's current balance.");
+        let confirm = window.confirm("This will only remove your record of this payment. It will not affect the student's current balance.\n\nAre you sure you want to do this? ");
         if (confirm){
             await deleteRecord(payment);
             getPayments();
@@ -101,7 +103,7 @@ export default function PaymentRecords(props){
     }
 
     async function deleteAndCharge(payment){
-        let confirm = window.confirm("Are you sure? This will remove the record of this payment AND add the payment amount back to the student's outstanding balance!");
+        let confirm = window.confirm("This will remove your record of this payment as well as add the payment amount back to the student's balance.\n\nAre you sure you want to do this? ");
         if (confirm){
             await chargeStudent(payment);
             await deleteRecord(payment);
@@ -120,17 +122,17 @@ export default function PaymentRecords(props){
                     <td>{payment.methodName}</td>
                     <td>${payment.amount}</td>
                     <td>
-                        <Button variant='warning' onClick={() => deletePayment(payment)}>Remove Record</Button>
+                        <Button variant='warning' onClick={() => deletePayment(payment)}>Remove</Button>
                     </td>
                     <td>
-                        <Button variant='danger' onClick={() => deleteAndCharge(payment)}>DELETE AND RE-CHARGE</Button>
+                        <Button variant='danger' onClick={() => deleteAndCharge(payment)}>Undo Payment</Button>
                     </td>
                 </tr>
                 )
             })
     
             return(
-                <div>
+                <div className='row mt-4'>
                     <Table>
                         <thead>
                             <tr>
@@ -164,9 +166,6 @@ export default function PaymentRecords(props){
             })
             return(
                 <div className='row'>
-                    <div className='col' />
-                    <div className='col col-sm-8'>
-                        <h4>Payment Records</h4>
                         <Table>
                             <thead>
                                 <tr>
@@ -181,8 +180,6 @@ export default function PaymentRecords(props){
                                 {paymentData}
                             </tbody>
                         </Table>
-                    </div>
-                    <div className='col' />
                 </div>
             )
         }
@@ -223,11 +220,11 @@ export default function PaymentRecords(props){
     return(
         <React.Fragment>
             <div className='text-center row'>
-                {/* <div className='col' /> */}
-                <div className='col'>
-                    <h1>Payment records - {user.username}</h1>
+                <div className='col-2' />
+                <div className='col-12 col-sm-8'>
+                    <h1 className='mb-2'>Payment Records</h1>
                     {user.role==='Teacher' && <Button as={Link} to='payment' variant='success' >Add Payment</Button>}
-                    {user.role ==='Student' && relationships && generateBalanceTable()}
+                    {/* {user.role ==='Student' && relationships && generateBalanceTable()} */}
                     {payments ? 
                         <React.Fragment>
                         {payments.length > 0 ?
@@ -242,7 +239,7 @@ export default function PaymentRecords(props){
                     </React.Fragment>
                     }
                 </div>
-                {/* <div className='col' /> */}
+                <div className='col-2' />
             </div>
         </React.Fragment>
     )

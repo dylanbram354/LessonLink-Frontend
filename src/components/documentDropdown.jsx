@@ -82,7 +82,7 @@ export default function DocumentDropdown(props){
         })
         if (links.length == 0){
             return(
-                <span><Button size='sm' variant='link' onClick={() => getDocs()}>No files - click to refresh</Button></span>
+                <p className='text-center'>No files found</p>
             )
         }
         return links
@@ -95,8 +95,12 @@ export default function DocumentDropdown(props){
             {loading ?
             <p>Downloading...</p>
             :
-            <Dropdown>
-                <Dropdown.Toggle variant='success'>
+            <Dropdown onClick={e => {
+                if (e.target.id === "files-dropdown") {
+                  getDocs();
+                }
+              }}>
+                <Dropdown.Toggle variant='success' id='files-dropdown'>
                     Select
                 </Dropdown.Toggle>
                 <Dropdown.Menu>

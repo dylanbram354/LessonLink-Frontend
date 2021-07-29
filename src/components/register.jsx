@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import useForm from '../hooks/useForm';
+import useForm from '../helpers/useForm';
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Redirect, Link } from 'react-router';
 
 export default function Register(){
 
-    const { values, handleChange, handleSubmit } = useForm(submitForm);
+    const { values, handleChange, handleSubmit, setValues } = useForm(submitForm);
     const [redirect, setRedirect ] = useState(false);
     const [userType, setUserType] = useState(null);
 
@@ -31,9 +31,9 @@ export default function Register(){
             {!redirect ?
                 <div className='row'>
                     <div className='col-3' />
-                    <div className='text-center col'>
+                    <div className='col'>
                         <Form onSubmit={handleSubmit}>
-                            <Form.Group className='mt-2' controlId="userType">
+                            <Form.Group className='mt-4' controlId="userType">
                                 <Form.Label>Are you a student or a teacher?</Form.Label>
                                 <Form.Select name="userType" onChange={handleChange} value={values.userType} required={true}>
                                     <option value=''>Select an option</option>
@@ -44,38 +44,39 @@ export default function Register(){
                             
                             {userType && 
                                 <React.Fragment>
-                                    <Form.Group className='mt-2' controlId="firstName">
+                                    <Form.Group className='mt-4' controlId="firstName">
                                         <Form.Label>First name</Form.Label>
                                         <Form.Control type="text" placeholder="First name" name="firstname" onChange={handleChange} value={values.firstName} required={true} />
                                     </Form.Group>
-                                    <Form.Group className='mt-2' controlId="lastName">
+                                    <Form.Group className='mt-4' controlId="lastName">
                                         <Form.Label>Last name</Form.Label>
                                         <Form.Control type="text" placeholder="Last name" name="lastname" onChange={handleChange} value={values.lastName} required={true} />
                                     </Form.Group>
-                                    <Form.Group className='mt-2' controlId="username">
+                                    <Form.Group className='mt-4' controlId="username">
                                         <Form.Label>Username</Form.Label>
                                         <Form.Control type="text" name="username" placeholder="Username" onChange={handleChange} value={values.username} required={true} />
                                     </Form.Group>
-                                    <Form.Group className='mt-2' controlId="password">
+                                    <Form.Group className='mt-4' controlId="password">
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control type="password" name="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" onChange={handleChange} value={values.password} required={true} />
                                         <Form.Text className="text-muted">
                                         Must be at least 8 characters and contain a number, lowercase letter, and uppercase letter.
                                         </Form.Text>
                                     </Form.Group>
-                                    <Form.Group className='mt-2' controlId="email">
+                                    <Form.Group className='mt-4' controlId="email">
                                         <Form.Label>Email address</Form.Label>
                                         <Form.Control type="email" name="email" placeholder="Email address" onChange={handleChange} value={values.email} required={true} />
                                     </Form.Group>
-                                    <Form.Group className='mt-2' controlId="phonenumber">
+                                    <Form.Group className='mt-4' controlId="phonenumber">
                                         <Form.Label>Phone number</Form.Label>
-                                        <Form.Control type="tel" name="phonenumber" placeholder="Phone number" onChange={handleChange} value={values.phonenumber} required={true} />
+                                        <Form.Control type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phonenumber" onChange={handleChange} value={values.phonenumber} required={true} />
+                                        <Form.Text className='text-muted'>Format: 123-456-7890</Form.Text>
                                     </Form.Group>
                                     <React.Fragment>
                                         {userType === "TEACHER" ? 
-                                        <Form.Group className='mt-2' controlId="preferredContact">
+                                        <Form.Group className='mt-4' controlId="preferredContact">
                                             <Form.Label>Preferred method of contact</Form.Label>
-                                            <Form.Select name="prefferedContact" onChange={handleChange} value={values.preferredContact} required={true}>
+                                            <Form.Select name="preferredContact" onChange={handleChange} value={values.preferredContact} required={true}>
                                                 <option value="Email">Email</option>
                                                 <option value="Text">Text</option>
                                                 <option value="Phone">Phone</option>
@@ -89,7 +90,8 @@ export default function Register(){
                                             </Form.Group>
                                             <Form.Group className='mt-2' controlId="parentPhone">
                                                 <Form.Label>Parent/guardian phone number</Form.Label>
-                                                <Form.Control type="tel" name="parentPhone" placeholder="Parent/guardian phone" onChange={handleChange} value={values.parentPhone} required={true} />
+                                                <Form.Control type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="parentPhone" placeholder="Parent/guardian phone" onChange={handleChange} value={values.parentPhone} required={true} />
+                                                <Form.Text className='text-muted'>Format: 123-456-7890</Form.Text>
                                             </Form.Group>
                                         </React.Fragment>
                                         }
