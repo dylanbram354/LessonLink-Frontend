@@ -81,7 +81,7 @@ export default function LessonRecord(props){
             <div className='row'>
                 <div className='col' />
                 <div className='col'>
-                    <Card>
+                    <Card className='card-custom'>
                         <Card.Body className='text-center'>
                             <Card.Title className='mb-1'>{new Date(lesson.startTime).getTime() > new Date().getTime() ? <h2>Lesson Sheet (upcoming)</h2> : <h2>Lesson Sheet</h2>}</Card.Title>
                             <Card.Text>

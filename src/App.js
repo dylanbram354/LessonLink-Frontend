@@ -12,6 +12,8 @@ import LogPaymentForm from './components/logPaymentForm';
 import PaymentRecords from './components/paymentRecords';
 import LessonRecord from './components/lessonRecord';
 import MyRelationships from './components/myRelationships';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/app.css'
 
 function App() {
 
@@ -42,8 +44,10 @@ function App() {
   }
 
   return (
-    <React.Fragment>
-      <NavBar user={user} logout={logout}/>
+    <div class="bg_image">
+      <div className='mb-4'>
+        <NavBar user={user} logout={logout}/>
+      </div>
       <Switch>
         {/* <Route path="/" exact render={(props) => (<Schedule {...props} user={user} token={token}/>)} /> */}
         <Route path="/register" component={Register} />
@@ -128,7 +132,7 @@ function App() {
               }
           }} />
       </Switch>
-    </React.Fragment>
+    </div>
   );
 }
 

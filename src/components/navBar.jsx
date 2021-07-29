@@ -19,9 +19,9 @@ export default function NavBar(props){
             {user ? 
                 <React.Fragment>
                     {user.role == "Teacher" ? 
-                        <Navbar variant="light">
+                        <Navbar variant="dark" bg='dark'>
                             <Container>
-                                <Navbar.Brand>LessonLink</Navbar.Brand>
+                                <Navbar.Brand as={Link} to='/'>LessonLink</Navbar.Brand>
                                 <Nav>
                                     <Nav.Item className="text-lg"> 
                                         <Nav.Link as={Link} to="/">Students</Nav.Link>
@@ -42,7 +42,7 @@ export default function NavBar(props){
                             </Container>
                         </Navbar>
                     :
-                    <Navbar variant="light">
+                    <Navbar variant="dark" bg='dark'>
                         <Container>
                             <Navbar.Brand>LessonLink</Navbar.Brand>
                             <Nav>
@@ -64,7 +64,7 @@ export default function NavBar(props){
                     }
                 </React.Fragment>
             :
-                <Navbar variant="light">
+                <Navbar variant="dark" bg='dark'>
                     <Container>
                         <Navbar.Brand>LessonLink</Navbar.Brand>
                         <Nav>

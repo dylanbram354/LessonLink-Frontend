@@ -212,7 +212,7 @@ export default function MyRelationships(props){
     function generateStudentCard(student){
         let studentLessons = sortedLessons.filter(item => {return item.relationshipId == student.relationshipId})[0].lessons;
         return(
-            <Card className='ml-2 mr-2 text-center'>
+            <Card className='ml-2 mr-2 text-center card-custom'>
                 <Card.Body>
                     <Card.Title className='row'>
                         <div className='col'>{student.student.firstName} {student.student.lastName}</div>
@@ -252,7 +252,7 @@ export default function MyRelationships(props){
         let studentLessons = sortedLessons.filter(item => {return item.relationshipId == teacher.relationshipId})[0].lessons;
         console.log(teacher);
         return(
-            <Card className='ml-2 mr-2'>
+            <Card className='ml-2 mr-2 card-custom'>
                 <Card.Body>
                     <Card.Title className='row'>
                         <div className='col'>{teacher.teacher.firstName} {teacher.teacher.lastName}</div>
@@ -368,7 +368,7 @@ export default function MyRelationships(props){
                         {otherStudents && myStudents && 
                         <div className='text-center m-2'>
                             <Dropdown>
-                                <Dropdown.Toggle variant='info'>
+                                <Dropdown.Toggle variant='light'>
                                     Add
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
@@ -399,7 +399,7 @@ export default function MyRelationships(props){
                         {otherTeachers && myTeachers && 
                         <div className='text-center m-2'>
                             <Dropdown>
-                                <Dropdown.Toggle variant='info'>
+                                <Dropdown.Toggle variant='light'>
                                     Add
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>

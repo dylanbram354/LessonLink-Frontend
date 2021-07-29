@@ -130,26 +130,28 @@ export default function Schedule(props){
         return(
             <div className='mt-4'>
                 {todayData.length > 0 && 
-                    <div className='mb-4'>
-                        <h2>You have a lesson today!</h2>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>Teacher</th>
-                                    <th>Start time</th>
-                                    <th>End time</th>
-                                    <th>Fee amount</th>
-                                    <th>Location</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {todayData}
-                            </tbody>
-                        </Table>
+                    <div className='mb-4 overflow-auto' style={{border: '2px solid grey', padding: '10px'}}>
+                        <div className='mb-4'>
+                            <h2>You have a lesson today!</h2>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Teacher</th>
+                                        <th>Start time</th>
+                                        <th>End time</th>
+                                        <th>Fee amount</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {todayData}
+                                </tbody>
+                            </Table>
+                        </div>
                     </div>
                 }
                 <div>
-                    <h2>Upcoming Lessons</h2>
+                    {generateCalendar()}
                     <Table>
                         <thead>
                             <tr>
@@ -166,7 +168,6 @@ export default function Schedule(props){
                         </tbody>
                     </Table>
                 </div>
-                {generateCalendar()}
             </div>
         )
     }
@@ -269,8 +270,8 @@ export default function Schedule(props){
             )
         });
         return(
-            <div>
-                <Calendar
+            <div >
+                <Calendar className='cal'
                     localizer={localizer}
                     defaultDate={new Date()}
                     events={myEvents}
