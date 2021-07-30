@@ -130,9 +130,9 @@ export default function Schedule(props){
         return(
             <div className='mt-4'>
                 {todayData.length > 0 && 
-                    <div className='mb-4 overflow-auto' style={{border: '2px solid grey', padding: '10px'}}>
+                    <div className='mb-4 overflow-auto'>
                         <div className='mb-4'>
-                            <h2>You have a lesson today!</h2>
+                            <h2>You have lessons today!</h2>
                             <Table>
                                 <thead>
                                     <tr>
@@ -152,21 +152,25 @@ export default function Schedule(props){
                 }
                 <div>
                     {generateCalendar()}
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Teacher</th>
-                                <th>Date</th>
-                                <th>Start time</th>
-                                <th>End time</th>
-                                <th>Fee amount</th>
-                                <th>Location</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {upcomingData}
-                        </tbody>
-                    </Table>
+                    {upcomingData.length > 0 &&
+                        <div className='mb-4 overflow-auto' style={{padding: '10px'}}>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Teacher</th>
+                                        <th>Date</th>
+                                        <th>Start time</th>
+                                        <th>End time</th>
+                                        <th>Fee amount</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {upcomingData}
+                                </tbody>
+                            </Table>
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -210,8 +214,8 @@ export default function Schedule(props){
         return(
             <div className='mt-4'>
                 {todayData.length > 0 &&
-                <div className='mb-4 overflow-auto' style={{border: '2px solid white', borderRadius: '10px', padding: '10px'}}>
-                    <h2>You have lessons scheduled for today!</h2>
+                <div className='mb-4 overflow-auto'>
+                    <h2>Today's Lessons</h2>
                     <Table>
                         <thead>
                             <tr>
@@ -257,14 +261,17 @@ export default function Schedule(props){
         )
     }
 
-    const localizer = momentLocalizer(moment);
-
     function generateCalendar(){
+        const localizer = momentLocalizer(moment);
         let myEvents = myLessons.map(lesson => {
+            var startTime = new Date(lesson.startTime + 'Z');
+            startTime.setHours(startTime.getHours() + 4);
+            var endTime = new Date(lesson.endTime + 'Z');
+            endTime.setHours(endTime.getHours() + 4);
             return (
                 {
-                    start: new Date(lesson.startTime + 'Z'), 
-                    end: new Date(lesson.endTime + 'Z'),
+                    start: startTime,
+                    end: endTime,
                     title: `Lesson - ${lesson.relationship.student.firstName} ${lesson.relationship.student.lastName} and ${lesson.relationship.teacher.firstName} ${lesson.relationship.teacher.lastName}`,
                     allDay: false,
                     id: lesson.lessonId

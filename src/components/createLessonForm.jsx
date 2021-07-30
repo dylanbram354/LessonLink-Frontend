@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useForm from '../helpers/useForm';
 import axios from 'axios';
-import { Form, Button, Card, Container, InputGroup } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import moment from 'moment';
 import useCal from '../helpers/useCal';
 import { Redirect } from 'react-router';
@@ -14,6 +14,7 @@ export default function CreateLessonForm(props){
     const [myStudents, setMyStudents] = useState(null);
     const [today, setToday] = useState(() => { let date = moment().format(); return date.substring(0, date.length-9) + ':00.00'});
     const [redirect, setRedirect] = useState(false);
+    const [recurring, setRecurring] = useState(false);
 
     useEffect(() => {
         setValues({...values, addToGoogle: false});
@@ -87,8 +88,65 @@ export default function CreateLessonForm(props){
         }
     }
 
+    function addWeeks(originalTime, numWeeksToAdd){
+        if(numWeeksToAdd ==0){
+            return originalTime;
+        }
+        else{
+            let newTime = new Date(originalTime);
+            newTime.setDate(newTime.getDate() + (7*numWeeksToAdd));
+            newTime.setHours(newTime.getHours() - 4);
+            newTime = newTime.toISOString();
+            newTime = newTime.substring(0, newTime.length-8);
+            return newTime;
+        }
+    }
+
+    async function addWeeklyLessons(){
+        let location = values.location;
+        let comments = values.comments;
+        if (typeof values.location == 'undefined'){
+            location = null;
+        }
+        if (typeof values.comments == 'undefined'){
+            comments = null;
+        }
+        console.log(values.startTime);
+        let responses = [];
+        let promises = [];
+        for (let i=0; i<values.repeat; i++){
+            // let newStartTime = new Date(values.startTime);
+            // newStartTime.setDate(newStartTime.getDate() + (7*i));
+            // newStartTime = newStartTime.toISOString()
+            // newStartTime = newStartTime.substring(0, newStartTime.length-8);
+            let startTime = addWeeks(values.startTime, i);
+            let endTime = addWeeks(values.endTime, i);
+            let newLesson = {
+                startTime: startTime,
+                endTime: endTime,
+                googleEventId: null,
+                location: location,
+                comments: comments,
+                feeAmount: parseFloat(values.feeAmount)
+            };
+            try{
+                promises.push(
+                    axios.post(`https://localhost:44394/api/lessons/create/studentId=${values.studentId}`, newLesson, {headers: {Authorization: 'Bearer ' + user.token}})
+                    .then(response => {console.log(response.data); responses.push(response.data);}));
+            }
+            catch(err){
+                alert(err);
+            }
+        }
+        Promise.all(promises).then(()=>console.log(responses));
+        setRedirect(true);
+    }
+
     async function submitForm(){ 
-        if (values.addToGoogle == true){
+        if(recurring){
+            addWeeklyLessons();
+        }
+        else if (values.addToGoogle == true){
             await createGoogleEvent();
         }
         else{
@@ -128,6 +186,18 @@ export default function CreateLessonForm(props){
                             <Form.Label>End time</Form.Label>
                             <Form.Control type='datetime-local' name='endTime' onChange={handleChange} value={values.endTime} min={values.startTime} required={true}/>
                         </Form.Group>
+                        {recurring && 
+                        <Form.Group as={Row} className='mt-2' controlId='repeat'>
+                            <Col/>
+                            <Form.Label column >Repeat</Form.Label>
+                            <Col>
+                                <Form.Control type='number' max={12} min={2} name='repeat' onChange={handleChange} value={values.repeat} required={true}/>
+                            </Col>
+                            <Form.Label column>times</Form.Label>
+                            <Col/>
+                        </Form.Group>
+                        }
+                        <Button className='mt-2' variant='secondary' onClick={() => {setRecurring(!recurring)}}>{!recurring ? 'Make this a weekly event' : 'Cancel'}</Button>
                         <Form.Group className='mt-2' controlId='location'>
                             <Form.Label>Location (optional)</Form.Label>
                             <Form.Control as='textarea' rows={2} name='location' onChange={handleChange} value={values.location} required={false}/>
@@ -143,9 +213,11 @@ export default function CreateLessonForm(props){
                                 <Form.Control type='number' min={0.00} step={0.01} name='feeAmount' onChange={handleChange} value={values.feeAmount} required={true} />
                             </InputGroup>
                         </Form.Group>
+                        {!recurring &&
                         <Form.Group className='mt-2' controlId='addToGoogle'>
-                            <Form.Check type='checkbox' label='Add an event to my Google Calendar' name='addToGoogle' onChange={handleToggle} value={values.addToGoogle} />
+                            <Form.Check type='checkbox' label='Add to my Google Calendar' name='addToGoogle' onChange={handleToggle} value={values.addToGoogle} />
                         </Form.Group>
+                        }
                         <Button className='mt-2' type="submit">Submit</Button>
                     </Form>
                 </div>

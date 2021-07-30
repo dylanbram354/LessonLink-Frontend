@@ -19,6 +19,9 @@ export default function MyRelationships(props){
     const {addEvent, deleteEvent} = useCal();
 
     useEffect(async () => {
+        if (props.user === null){
+            setUser(null);
+        }
         if(user != null){
             if (user.role === 'Teacher'){
                 await getMyStudentsAndLessons();
@@ -188,7 +191,7 @@ export default function MyRelationships(props){
                             Past Lessons
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {sortedLessons.past.length > 0 ? sortedLessons.past.reverse().map(lesson => generateLessonLinkOption(lesson)) : <p>No lessons found.</p>}
+                            {sortedLessons.past.length > 0 ? sortedLessons.past.reverse().map(lesson => generateLessonLinkOption(lesson)) : <p className='text-center'>No lessons found.</p>}
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
@@ -198,7 +201,7 @@ export default function MyRelationships(props){
                             Scheduled Lessons
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {sortedLessons.upcoming.length > 0 ? sortedLessons.upcoming.reverse().map(lesson => generateLessonLinkOption(lesson)) : <p>No lessons found.</p>}
+                            {sortedLessons.upcoming.length > 0 ? sortedLessons.upcoming.reverse().map(lesson => generateLessonLinkOption(lesson)) : <p className='text-center'>No lessons found.</p>}
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
@@ -235,9 +238,9 @@ export default function MyRelationships(props){
                         </div>
                         <div className='mt-4 mb-4'>
                             {generateLessonDropdowns(studentLessons)}
-                            <div>
+                            {/* <div>
                                 <Button as={Link} to={{pathname: '/createLesson', state: { student: student.student }}}>Add Lesson</Button>
-                            </div>
+                            </div> */}
                         </div>
                     </Card.Text>
                 </Card.Body>
@@ -422,7 +425,7 @@ export default function MyRelationships(props){
                 </React.Fragment>}
             </React.Fragment>
         :
-        <h1 className='text-center'>Welcome to LessonLink! Please login or create an account.</h1>
+            <h1 className='center-page text-center'>Welcome to LessonLink! Please login or create an account.</h1>
         }
     </React.Fragment>
     )

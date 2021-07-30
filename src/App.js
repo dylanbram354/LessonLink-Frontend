@@ -13,7 +13,7 @@ import PaymentRecords from './components/paymentRecords';
 import LessonRecord from './components/lessonRecord';
 import MyRelationships from './components/myRelationships';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/app.css'
+import './styles/app.scss'
 
 function App() {
 
@@ -62,10 +62,11 @@ function App() {
   }
 
   return (
-    <div className="bg_image">
-      <div className='mb-4'>
+    <div>
+      <div>
         <NavBar user={user} logout={logout}/>
       </div>
+      <div className="pt-4">
       <Switch>
         {/* <Route path="/" exact render={(props) => (<Schedule {...props} user={user} token={token}/>)} /> */}
         <Route path="/register" component={Register} />
@@ -150,6 +151,7 @@ function App() {
               }
           }} />
       </Switch>
+      </div>
     </div>
   );
 }
