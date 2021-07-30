@@ -210,7 +210,7 @@ export default function Schedule(props){
         return(
             <div className='mt-4'>
                 {todayData.length > 0 &&
-                <div className='mb-4 overflow-auto' style={{border: '2px solid grey', padding: '10px'}}>
+                <div className='mb-4 overflow-auto' style={{border: '2px solid white', borderRadius: '10px', padding: '10px'}}>
                     <h2>You have lessons scheduled for today!</h2>
                     <Table>
                         <thead>
@@ -232,24 +232,26 @@ export default function Schedule(props){
                 }
                 <div>
                     {generateCalendar()}
-                    <div className='mb-4 overflow-auto' style={{padding: '10px'}}>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Date</th>
-                                    <th>Start time</th>
-                                    <th>End time</th>
-                                    <th>Google Event</th>
-                                    <th>Fee amount</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {upcomingData}
-                            </tbody>
-                        </Table>
-                    </div>
+                    {upcomingData.length > 0 &&
+                        <div className='mb-4 overflow-auto' style={{padding: '10px'}}>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Date</th>
+                                        <th>Start time</th>
+                                        <th>End time</th>
+                                        <th>Google Event</th>
+                                        <th>Fee amount</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {upcomingData}
+                                </tbody>
+                            </Table>
+                        </div>
+                    }
                 </div>
             </div>
         )

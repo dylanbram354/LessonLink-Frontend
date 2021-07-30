@@ -17,10 +17,28 @@ import './styles/app.css'
 
 function App() {
 
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const setInitialUserState = () => {
+    const jwt = localStorage.getItem('token');
+    if(jwt !== null){
+      try{
+        let user = jwtDecode(jwt);
+        user = {...user, role: user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], token: jwt};
+        return(user)
+      }
+      catch(err){
+        console.log(err);
+        alert(err + "\nIn 'getToken'")
+      }
+    }
+    else{
+      return null
+    }
+  }
 
-  useEffect(() => {getToken()}, []);
+  const [user, setUser] = useState(setInitialUserState());
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  // useEffect(() => {getToken()}, []);
 
   const getToken = () =>{
     const jwt = localStorage.getItem('token');
@@ -44,7 +62,7 @@ function App() {
   }
 
   return (
-    <div class="bg_image">
+    <div className="bg_image">
       <div className='mb-4'>
         <NavBar user={user} logout={logout}/>
       </div>

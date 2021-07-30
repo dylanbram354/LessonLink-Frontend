@@ -19,16 +19,13 @@ export default function MyRelationships(props){
     const {addEvent, deleteEvent} = useCal();
 
     useEffect(async () => {
-        if(props.user != null){
+        if(user != null){
             if (user.role === 'Teacher'){
                 await getMyStudentsAndLessons();
             }
             else{
                 await getMyTeachersAndLessons();
             }
-        }
-        else{
-            setUser(null);
         }
     }, [props.user]);
 
