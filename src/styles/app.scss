@@ -1,9 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=MonteCarlo");
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+
+
 body{
-    background-image: linear-gradient(rgba(228, 226, 226, 0.70),rgba(228, 226, 226, 0.70)),url('../sheet-music-bg-2.jpg');
+    background-image: linear-gradient(rgba(255, 255, 255, 0.85),rgba(61, 61, 61, 0.85)),url('../sheet-music-bg-2.jpg');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
     overflow-y: scroll;
+    font-family: 'Oswald', sans-serif;
 }
 
 .center-page{
@@ -52,4 +57,9 @@ form{
 
 h1, h2, h3, h4, h5, h6{
     text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+}
+
+.logo{
+    font-family: 'MonteCarlo', serif;
+    font-size: xx-large;
 }

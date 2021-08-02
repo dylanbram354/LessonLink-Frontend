@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import MakePaymentModal from './makePaymentModal';
 
 export default function PaymentRecords(props){
 
@@ -223,14 +224,18 @@ export default function PaymentRecords(props){
                 <div className='col-2' />
                 <div className='col-12 col-sm-8'>
                     <h1 className='mb-2'>Payment Records</h1>
-                    {user.role==='Teacher' && <Button as={Link} to='payment' variant='success' >Add Payment</Button>}
+                    {user.role==='Teacher' ? 
+                        <Button as={Link} to='payment' variant='success' >Add Payment Record</Button> 
+                        : 
+                        <div /> //<MakePaymentModal user={user} />
+                    }
                     {/* {user.role ==='Student' && relationships && generateBalanceTable()} */}
                     {payments ? 
                         <React.Fragment>
                         {payments.length > 0 ?
                             generatePaymentTable()
                         :
-                            <p>No payments to display.</p>
+                            <p className='mt-2'>No payments to display.</p>
                         }
                         </React.Fragment>
                     :

@@ -115,10 +115,6 @@ export default function CreateLessonForm(props){
         let responses = [];
         let promises = [];
         for (let i=0; i<values.repeat; i++){
-            // let newStartTime = new Date(values.startTime);
-            // newStartTime.setDate(newStartTime.getDate() + (7*i));
-            // newStartTime = newStartTime.toISOString()
-            // newStartTime = newStartTime.substring(0, newStartTime.length-8);
             let startTime = addWeeks(values.startTime, i);
             let endTime = addWeeks(values.endTime, i);
             let newLesson = {
@@ -132,7 +128,7 @@ export default function CreateLessonForm(props){
             try{
                 promises.push(
                     axios.post(`https://localhost:44394/api/lessons/create/studentId=${values.studentId}`, newLesson, {headers: {Authorization: 'Bearer ' + user.token}})
-                    .then(response => {console.log(response.data); responses.push(response.data);}));
+                    .then(response => {responses.push(response.data);}));
             }
             catch(err){
                 alert(err);
@@ -197,7 +193,7 @@ export default function CreateLessonForm(props){
                             <Col/>
                         </Form.Group>
                         }
-                        <Button className='mt-2' variant='secondary' onClick={() => {setRecurring(!recurring)}}>{!recurring ? 'Make this a weekly event' : 'Cancel'}</Button>
+                        <Button className='mt-2' variant='link' onClick={() => {setRecurring(!recurring)}}>{!recurring ? 'Make this a weekly event' : 'Cancel'}</Button>
                         <Form.Group className='mt-2' controlId='location'>
                             <Form.Label>Location (optional)</Form.Label>
                             <Form.Control as='textarea' rows={2} name='location' onChange={handleChange} value={values.location} required={false}/>

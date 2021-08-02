@@ -39,7 +39,7 @@ export default function LogPaymentForm(props){
 
     async function submitForm(){
         let newPayment = {
-            studentId: values.studentId,
+            personId: values.studentId,
             methodId: parseInt(values.methodId),
             amount: parseFloat(values.amount)
         }

@@ -369,7 +369,7 @@ export default function MyRelationships(props){
                         <div className='text-center m-2'>
                             <Dropdown>
                                 <Dropdown.Toggle variant='light'>
-                                    Add
+                                    Add Student
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {otherStudents.length > 0 ? otherStudents.map(student => generateRelationshipDropdown(student)) : <p>No students found.</p>}
@@ -396,7 +396,7 @@ export default function MyRelationships(props){
                 <React.Fragment>
                     <h1 className='text-center'>Teachers</h1>
                     <div className='text-center'>
-                        {otherTeachers && myTeachers && 
+                        {/* {otherTeachers && myTeachers && 
                         <div className='text-center m-2'>
                             <Dropdown>
                                 <Dropdown.Toggle variant='light'>
@@ -407,7 +407,7 @@ export default function MyRelationships(props){
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        }
+                        } */}
                     </div>
                     {myTeachers && sortedLessons ? 
                     <React.Fragment>
@@ -425,7 +425,12 @@ export default function MyRelationships(props){
                 </React.Fragment>}
             </React.Fragment>
         :
-            <h1 className='center-page text-center'>Welcome to LessonLink! Please login or create an account.</h1>
+        <div className='mt-4 text-center'>
+            <h1 className='logo' style={{fontSize: '5em'}}>LessonLink</h1>
+            <div className='mt-4'><Button as={Link} to="/login">Login</Button></div>
+            <div className='mt-4'><Button variant='success' as={Link} to="/register">Register</Button></div>
+            
+        </div>
         }
     </React.Fragment>
     )

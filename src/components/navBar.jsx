@@ -21,7 +21,7 @@ export default function NavBar(props){
                     {user.role == "Teacher" ? 
                         <Navbar variant="dark" bg='dark' collapseOnSelect expand="lg">
                             <Container>
-                                <Navbar.Brand as={Link} to='/'>LessonLink</Navbar.Brand>
+                                <Navbar.Brand className='logo' as={Link} to='/'>LessonLink</Navbar.Brand>
                                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                                 <Navbar.Collapse id="responsive-navbar-nav">
                                     <Nav className='me-auto'>
@@ -35,7 +35,7 @@ export default function NavBar(props){
                                             <Nav.Link as={Link} to="paymentRecords">Payments</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link as={Link} to="createLesson">Add Lesson</Nav.Link>
+                                            <Nav.Link as={Link} to="createLesson">Post Lesson</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
                                     <Nav>
@@ -49,7 +49,7 @@ export default function NavBar(props){
                     :
                         <Navbar variant="dark" bg='dark' collapseOnSelect expand="lg">
                             <Container>
-                                <Navbar.Brand as={Link} to='/'>LessonLink</Navbar.Brand>
+                                <Navbar.Brand className='logo' as={Link} to='/'>LessonLink</Navbar.Brand>
                                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                                 <Navbar.Collapse id="responsive-navbar-nav">
                                     <Nav className='me-auto'>
@@ -77,7 +77,7 @@ export default function NavBar(props){
             <React.Fragment>
                 <Navbar variant="dark" bg='dark' collapseOnSelect expand="lg">
                     <Container>
-                        <Navbar.Brand as={Link} to='/'>LessonLink</Navbar.Brand>
+                        <Navbar.Brand className='logo' as={Link} to='/'>LessonLink</Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className='me-auto'>
